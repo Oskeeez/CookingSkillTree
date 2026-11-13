@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f8f4fc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Mise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Mono:wght@400;500&family=Figtree:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Pastel light theme. Each route owns a hue: --u fill, --u-d edge, --u-ink text on it, --u-t tint.
+     Layout: top bar, route chips, scrolling path of plates, two tabs. Journal entries are tinted tickets. */
+  --bg:#f8f4fc; --surface:#ffffff; --ink:#2b2750; --muted:#68648a; --line:#e7e1f1;
+  --lock:#ece8f2; --lock-d:#d9d3e3; --scrim:rgba(43,39,80,.45);
+  --c0:#6f5bd8; --c0d:#5443b8; --c0t:#ece8ff;
+  --c1:#d63d5a; --c1t:#ffe3e8; --c3t:#fff0c2;
+  --u:#d4c8ff; --u-d:#a592f0; --u-ink:#3d2a8c; --u-t:#ece7ff;
+  --display:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --body:'Figtree',ui-sans-serif,system-ui,sans-serif;
+  --mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+.r0,.r6{--u:#ffe08a;--u-d:#e8b93c;--u-ink:#6b4a00;--u-t:#fff4cf}
+.r1,.r7{--u:#ffc2d4;--u-d:#f08fae;--u-ink:#7a1f43;--u-t:#ffe6ee}
+.r2,.r8{--u:#ffcfa6;--u-d:#f0a064;--u-ink:#7a3a05;--u-t:#ffeadb}
+.r3,.r9{--u:#b8ecd0;--u-d:#6ccb9f;--u-ink:#0f5a3a;--u-t:#def7ea}
+.r4,.r10{--u:#d4c8ff;--u-d:#a592f0;--u-ink:#3d2a8c;--u-t:#ece7ff}
+.r5,.r11{--u:#b9dcff;--u-d:#78b5f0;--u-ink:#123f73;--u-t:#e0efff}
+
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.45 var(--body);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+svg{display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--c0);outline-offset:2px;border-radius:6px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+#app{height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;position:relative;overflow:hidden;
+  background:
+   radial-gradient(60% 28% at 100% 0%,rgba(255,194,212,.45),transparent 70%),
+   radial-gradient(60% 30% at 0% 38%,rgba(185,220,255,.4),transparent 70%),
+   radial-gradient(60% 30% at 100% 72%,rgba(184,236,208,.4),transparent 70%),
+   var(--bg)}
+@media (min-width:561px){#app{border-inline:1px solid var(--line)}}
+
+#top{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:62px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:rgba(255,255,255,.82);backdrop-filter:blur(8px);z-index:5}
+.t-left{min-width:0}
+.t-title{font:700 22px/1.1 var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pills{display:flex;gap:8px;flex:none}
+.pill{display:flex;align-items:center;gap:5px;height:32px;padding:0 10px;border-radius:99px;background:#fff;border:1px solid var(--line);font:600 14px/1 var(--body);font-variant-numeric:tabular-nums}
+.pill svg{width:17px;height:17px}
+.pill.p-flame svg{color:var(--c1)}
+.pill.p-count svg{color:var(--c0)}
+
+#routes{flex:none;display:flex;gap:10px;overflow-x:auto;padding:10px 16px 14px;background:rgba(255,255,255,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:4;scrollbar-width:none}
+#routes::-webkit-scrollbar{display:none}
+#routes[hidden]{display:none}
+.rchip{flex:none;display:flex;flex-direction:column;gap:3px;min-width:108px;padding:9px 14px;border-radius:16px;background:var(--u);color:var(--u-ink);border:2px solid transparent;box-shadow:0 3px 0 var(--u-d)}
+.rchip .rn{font:700 15px/1.1 var(--display)}
+.rchip .rc{font:500 12px/1 var(--mono);opacity:.85;font-variant-numeric:tabular-nums}
+.rchip[aria-pressed="true"]{border-color:var(--u-ink);transform:translateY(1px)}
+.rchip:not([aria-pressed="true"]){opacity:.78}
+
+#main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 40px}
+
+#tabs{flex:none;display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,.9);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 8px;color:var(--muted);font:600 12px/1.2 var(--body);text-align:center}
+.tab svg{width:25px;height:25px}
+.tab[aria-current="page"]{color:var(--c0)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;background:var(--c0);color:#fff;font:700 16px/1 var(--body);box-shadow:0 4px 0 var(--c0d);text-align:center}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--c0d)}
+.btn.alt{background:#fff;color:var(--c0);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.alt:active{box-shadow:0 1px 0 var(--line)}
+.btn.small{min-height:38px;padding:0 14px;font-size:14px;border-radius:12px;box-shadow:0 3px 0 var(--c0d)}
+.btn.block{width:100%}
+.link{display:inline-flex;align-items:center;gap:8px;color:var(--c0);font-weight:600;text-decoration:none;min-height:40px}
+.link svg{width:20px;height:20px}
+.link.danger{color:var(--c1)}
+
+.intro{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 4px 0 var(--line)}
+.intro h2{font:700 20px/1.15 var(--display);margin-bottom:8px}
+.intro ol{padding-left:20px;display:grid;gap:4px;color:var(--muted)}
+.intro b{color:var(--ink);font-weight:600}
+.unit{margin-bottom:14px}
+.banner{position:relative;overflow:hidden;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px;border-radius:20px;color:var(--u-ink);box-shadow:0 5px 0 var(--u-d);
+  background:radial-gradient(circle at 104% -18%,rgba(255,255,255,.6) 0 26%,transparent 27%),radial-gradient(circle at 92% 125%,rgba(255,255,255,.45) 0 20%,transparent 21%),var(--u)}
+.banner .mono{color:inherit;opacity:.8}
+.banner h2{font:700 24px/1.1 var(--display);letter-spacing:-.01em;margin:2px 0 4px;text-wrap:balance}
+.banner p{font-size:14px}
+.b-prog{flex:none;font:500 13px/1 var(--mono);padding:6px 9px;border-radius:99px;border:2px solid currentColor;font-variant-numeric:tabular-nums;background:rgba(255,255,255,.5)}
+.nodes{list-style:none;padding:26px 0 8px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.node{position:relative;display:flex;flex-direction:column;align-items:center;transform:translateX(var(--dx,0));width:100%;max-width:220px}
+.plate{position:relative;width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:var(--u);color:var(--u-ink);box-shadow:0 6px 0 var(--u-d);font:700 28px/1 var(--display);transition:transform .08s,box-shadow .08s}
+.plate::before{content:"";position:absolute;inset:7px;border-radius:50%;border:2px solid rgba(255,255,255,.75)}
+.plate svg{width:32px;height:32px;stroke-width:2.8;position:relative}
+.plate:active{transform:translateY(4px);box-shadow:0 2px 0 var(--u-d)}
+.node.boss .plate{width:92px;height:92px;outline:3px solid var(--u-d);outline-offset:5px}
+.node.boss .plate svg{width:38px;height:38px}
+.st-open .plate,.st-learning .plate{background:#fff;box-shadow:0 6px 0 var(--u-d),inset 0 0 0 6px var(--u)}
+.st-open .plate::before,.st-learning .plate::before{display:none}
+.st-open .plate:active,.st-learning .plate:active{box-shadow:0 2px 0 var(--u-d),inset 0 0 0 6px var(--u)}
+.st-locked .plate{background:var(--lock);color:#9a93ab;box-shadow:0 6px 0 var(--lock-d)}
+.st-locked .plate::before{border-color:#fff}
+.st-locked.boss .plate{outline-color:var(--lock-d)}
+.nlabel{margin-top:14px;font:600 14px/1.25 var(--body);text-align:center;text-wrap:balance;max-width:180px}
+.st-locked .nlabel{color:var(--muted)}
+.dot{position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:var(--u-d);border:3px solid #fff}
+.start{position:absolute;top:-38px;left:50%;transform:translateX(-50%);padding:6px 12px;border-radius:10px;background:var(--u);color:var(--u-ink);border:2px solid var(--u-d);font:700 13px/1 var(--body);letter-spacing:.06em;white-space:nowrap;animation:bob 1.6s ease-in-out infinite;pointer-events:none}
+.start::after{content:"";position:absolute;left:50%;bottom:-7px;width:10px;height:10px;background:var(--u);border-right:2px solid var(--u-d);border-bottom:2px solid var(--u-d);transform:translateX(-50%) rotate(45deg)}
+.node.boss .start{top:-42px}
+.node.cur{margin-top:34px}
+.node.boss.cur{margin-top:40px}
+@keyframes bob{50%{transform:translateX(-50%) translateY(-5px)}}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.stat{border-radius:16px;padding:10px 12px;border:2px solid var(--u-d);background:var(--u-t);color:var(--u-ink)}
+.stat .mono{color:inherit;opacity:.8}
+.stat b{display:block;font:700 26px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.month{margin:22px 0 10px}
+.list{display:grid;gap:12px;list-style:none;padding:0}
+.ticket{position:relative;display:block;width:100%;background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px 16px 12px;box-shadow:0 3px 0 var(--line)}
+.ticket[class*=" r"]{background:var(--u-t);border-color:var(--u);box-shadow:0 3px 0 var(--u-d)}
+.ticket.ghost{border-style:dashed;background:transparent;box-shadow:none}
+.tk-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rate{font:500 11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:4px 8px;border-radius:99px;background:#fff;color:var(--c0)}
+.rate.draft{background:var(--c3t);color:var(--ink)}
+.perf{position:relative;margin:10px -16px 10px;border-top:2px dashed var(--u-d,var(--line))}
+.ticket:not([class*=" r"]) .perf{border-top-color:var(--line)}
+.perf::before,.perf::after{content:"";position:absolute;top:-9px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid transparent;border-color:var(--u,var(--line)) var(--u,var(--line)) transparent transparent;transform:rotate(45deg)}
+.perf::before{left:-10px}
+.perf::after{right:-10px;border-color:transparent transparent var(--u,var(--line)) var(--u,var(--line))}
+.tk-row{display:flex;gap:12px}
+.tk-body{min-width:0;flex:1}
+.tk-title{font:700 19px/1.2 var(--display);letter-spacing:-.005em}
+.tk-unit{font-size:13px;color:var(--muted);margin-top:2px}
+.tk-learned{margin-top:8px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tk-foot{display:flex;gap:14px;margin-top:10px;color:var(--muted);font-size:13px}
+.tk-foot span{display:inline-flex;align-items:center;gap:5px}
+.tk-foot svg{width:16px;height:16px}
+.thumb{flex:none;width:72px;height:72px;border-radius:12px;object-fit:cover;background:var(--lock);border:2px solid #fff}
+.foot{margin-top:28px;display:grid;gap:10px;justify-items:start}
+.sync{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.sync i{width:8px;height:8px;border-radius:50%;background:#f0b840}
+.sync.on i{background:#4cc28f}
+
+.scrim{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center;z-index:30;animation:fade .18s ease-out}
+.sheet{width:100%;max-width:560px;max-height:93vh;max-height:93dvh;overflow-y:auto;background:#fff;border-radius:26px 26px 0 0;border-top:8px solid var(--u);padding:16px 18px calc(22px + env(safe-area-inset-bottom));animation:up .22s ease-out;overscroll-behavior:contain}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+@keyframes fade{from{opacity:0}}
+.sh-top{position:sticky;top:-16px;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:12px;margin:-16px -18px 8px;padding:16px 18px 8px;background:#fff}
+.x{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--bg);flex:none}
+.x svg{width:20px;height:20px}
+.ed-title{font:700 28px/1.12 var(--display);letter-spacing:-.01em;margin:4px 0 12px;text-wrap:balance}
+.brief{display:grid;gap:8px;padding:12px 14px;border-radius:16px;background:var(--u-t);border:2px solid var(--u);margin-bottom:12px;font-size:15px}
+.brief b{display:block;font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--u-ink);margin-bottom:3px}
+.attempts{display:grid;gap:8px;margin:12px 0;list-style:none;padding:0}
+.attempt{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:14px;min-height:48px}
+.actions{display:grid;gap:12px;margin-top:16px}
+.note{color:var(--muted);font-size:14px}
+.field{display:grid;gap:6px;margin-top:16px}
+.field>label,.field>.lbl{font:600 14px/1.2 var(--body)}
+.field .hint{font-weight:400;color:var(--muted)}
+input[type=text],input[type=url],input[type=datetime-local],textarea{width:100%;font:400 16px/1.4 var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:11px 12px;min-height:46px}
+textarea{resize:vertical;min-height:96px}
+input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
+.when{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:var(--bg);margin-bottom:4px}
+.when .t{font-weight:600}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.chip{min-height:44px;border-radius:14px;border:2px solid var(--line);font:600 14px/1.1 var(--body);text-align:center;padding:0 4px}
+.chip[aria-pressed="true"]{border-color:var(--u-d);background:var(--u);color:var(--u-ink)}
+.photo{display:flex;align-items:center;gap:12px}
+.photo img{width:88px;height:88px;border-radius:14px;object-fit:cover}
+.filebtn{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:14px;border:2px dashed var(--u-d);background:var(--u-t);font-weight:600;color:var(--u-ink);cursor:pointer}
+.filebtn svg{width:20px;height:20px}
+.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.vids{list-style:none;padding:0;display:grid;gap:6px}
+.vid{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:14px;background:var(--bg)}
+.vid a{flex:1;min-width:0;text-decoration:none;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vid small{display:block;font:400 12px/1.2 var(--mono);color:var(--muted);font-weight:400;overflow:hidden;text-overflow:ellipsis}
+.vid .x{width:36px;height:36px;background:transparent}
+.addv{display:grid;grid-template-columns:1fr auto;gap:8px}
+.addv .t2{grid-column:1/-1}
+.err{color:var(--c1);font-weight:600;font-size:14px;margin-top:8px}
+.confirm{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--c1t);font-weight:600}
+.confirm div{display:flex;gap:8px}
+.confirm .btn{min-height:40px;font-size:14px;padding:0 14px;box-shadow:none}
+.confirm .btn.dng{background:var(--c1);color:#fff}
+
+.cel{width:100%;max-width:560px;background:#fff;border-radius:26px 26px 0 0;border-top:8px solid var(--u);padding:28px 22px calc(24px + env(safe-area-inset-bottom));text-align:center;animation:up .25s ease-out}
+.cel .plate{margin:0 auto 18px;width:96px;height:96px;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.cel .plate svg{width:44px;height:44px}
+.cel h2{font:700 28px/1.1 var(--display);margin-bottom:6px;text-wrap:balance}
+.cel p{color:var(--muted);margin-bottom:14px}
+.bar{height:12px;border-radius:99px;background:var(--lock);overflow:hidden;margin:0 auto 20px;max-width:280px}
+.bar i{display:block;height:100%;background:var(--u-d);border-radius:99px}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:min(92vw,420px);padding:11px 16px;border-radius:14px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;z-index:40;text-align:center}
+#toast[hidden]{display:none}
+#lightbox{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(43,39,80,.88)}
+#lightbox[hidden]{display:none}
+#lightbox img{max-width:100%;max-height:100%;border-radius:18px;object-fit:contain}
+#lightbox .x{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;background:#fff}
+[data-zoom]{cursor:zoom-in}
+
+.onb{align-items:stretch;background:var(--bg)}
+.onboard{width:100%;max-width:560px;margin:0 auto;height:100%;overflow-y:auto;padding:calc(26px + env(safe-area-inset-top)) 18px calc(26px + env(safe-area-inset-bottom));
+  background:radial-gradient(60% 24% at 100% 0%,rgba(255,194,212,.55),transparent 70%),radial-gradient(60% 26% at 0% 50%,rgba(185,220,255,.5),transparent 70%),radial-gradient(60% 26% at 100% 90%,rgba(184,236,208,.5),transparent 70%),var(--bg);animation:fade .25s ease-out}
+.onboard h1{font:700 34px/1.04 var(--display);letter-spacing:-.02em;margin:8px 0 10px;text-wrap:balance}
+.onboard .sub{color:var(--muted);margin-bottom:22px}
+.scard{display:block;position:relative;width:100%;text-align:left;border-radius:26px;padding:20px;margin-bottom:16px;color:var(--u-ink);box-shadow:0 6px 0 var(--u-d);
+  background:radial-gradient(circle at 106% -12%,rgba(255,255,255,.65) 0 30%,transparent 31%),radial-gradient(circle at 90% 130%,rgba(255,255,255,.45) 0 22%,transparent 23%),var(--u)}
+.scard:active{transform:translateY(4px);box-shadow:0 2px 0 var(--u-d)}
+.scard .badge{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:var(--u-ink);color:#fff;margin-bottom:12px}
+.scard h2{font:700 28px/1.05 var(--display);letter-spacing:-.015em;margin-bottom:6px}
+.scard.main{padding:24px 20px}
+.scard.main h2{font-size:38px}
+.scard p{font-size:15px}
+.scard .meta{margin-top:12px;font:500 12px/1.4 var(--mono);letter-spacing:.05em;text-transform:uppercase;opacity:.85}
+.scard .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.scard .tags span{font:600 13px/1 var(--body);padding:7px 10px;border-radius:99px;background:rgba(255,255,255,.7)}
+.scard.route h2{font-size:22px}
+.onb-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.rchip.switch{background:#fff;color:var(--c0);border:2px dashed var(--line);box-shadow:none;justify-content:center;align-items:center;opacity:1}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top"></header>
+  <div id="routes" hidden></div>
+  <main id="main" tabindex="-1"></main>
+  <nav id="tabs" aria-label="Sections"></nav>
+</div>
+<div id="layer"></div>
+<div id="toast" role="status" hidden></div>
+<div id="lightbox" hidden></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ------------------------------------------------------------------ *
+ * The suggested tree. These are meals to make and skills to practise,
+ * not recipes. Each one says what to focus on and how you know you got it.
+ * ------------------------------------------------------------------ */
+var UNITS = [
+ {title:'Heat & Eggs', blurb:'Learn what your stove actually does.', nodes:[
+  {id:'boiled-eggs', title:'Boiled eggs', focus:'Timing, and stopping the cook with cold water.', check:'It peels cleanly and the yolk is the doneness you aimed for.', mins:15, q:'how to boil eggs soft and hard boiled'},
+  {id:'scrambled', title:'Scrambled eggs', focus:'Low heat and constant movement.', check:'Soft, creamy curds and no water pooling on the plate.', mins:10, q:'how to make creamy scrambled eggs'},
+  {id:'fried-egg', title:'Fried egg', focus:'Pan temperature and how much fat to use.', check:'Set white, runny yolk, crisp lacy edge.', mins:10, q:'how to fry an egg perfectly'},
+  {id:'omelette', title:'French omelette', focus:'Pan control and a clean fold.', check:'Pale, smooth outside with a tender centre.', mins:10, q:'how to make a french omelette'},
+  {id:'breakfast', title:'Full cooked breakfast', boss:1, focus:'Timing a few things so they all land hot together.', check:'Everything on the plate is hot and nothing is overcooked.', mins:40, q:'how to time a full cooked breakfast'}
+ ]},
+ {title:'Knife & Veg', blurb:'Cut things evenly, then cook them four ways.', nodes:[
+  {id:'chopped-salad', title:'Chopped salad with dressing', focus:'Dicing evenly and whisking a dressing that holds together.', check:'Pieces are about the same size and the dressing coats instead of pooling.', mins:20, q:'basic knife skills for beginners'},
+  {id:'roast-veg', title:'Roast vegetables', focus:'Oven heat, even cuts, and not crowding the tray.', check:'Browned edges, soft middles, nothing steamed and soggy.', mins:45, q:'how to roast vegetables crispy'},
+  {id:'stir-fry', title:'Veg stir fry', focus:'A very hot pan, small batches, adding things in order.', check:'Veg is bright and crisp-tender, not grey and limp.', mins:20, q:'stir fry technique for beginners'},
+  {id:'mushrooms', title:'Browned mushrooms', focus:'Leaving food alone so it can brown.', check:'Deep golden colour and no liquid left in the pan.', mins:15, q:'how to cook mushrooms golden brown'},
+  {id:'tray-bake', title:'Tray bake dinner', boss:1, focus:'Cutting and timing several ingredients for one tray.', check:'Everything finishes at the same time.', mins:60, q:'sheet pan dinner technique'}
+ ]},
+ {title:'Rice, Pasta & Grains', blurb:'The base of half of all dinners.', nodes:[
+  {id:'rice', title:'Stovetop rice', focus:'Water ratio, lid on, and resting.', check:'Separate fluffy grains and none stuck to the pot.', mins:25, q:'how to cook rice on the stove perfectly'},
+  {id:'aglio', title:'Garlic and oil pasta', focus:'Salty water, al dente, and using the pasta water.', check:'A glossy sauce that clings to the pasta.', mins:20, q:'spaghetti aglio e olio technique'},
+  {id:'tomato-pasta', title:'Tomato sauce pasta', focus:'Simmering to reduce and seasoning at the end.', check:'Sauce is thick enough to coat and tastes balanced.', mins:35, q:'simple tomato sauce for pasta technique'},
+  {id:'fried-rice', title:'Fried rice', focus:'Cold rice and a hot pan.', check:'Separate grains with a few crisp bits, not mushy.', mins:20, q:'how to make fried rice that is not mushy'},
+  {id:'risotto', title:'Risotto', boss:1, focus:'Adding stock gradually and stirring for creaminess.', check:'Loose and creamy, with rice that still has a slight bite.', mins:45, q:'how to make risotto'}
+ ]},
+ {title:'Pan Proteins', blurb:'Browning meat, fish and tofu without drying it out.', nodes:[
+  {id:'chicken-thighs', title:'Pan-fried chicken thighs', focus:'Crisp skin and checking the inside is cooked.', check:'Golden crisp skin and juicy meat, cooked through.', mins:35, q:'crispy skin pan fried chicken thighs'},
+  {id:'steak', title:'Seared steak or tofu', focus:'A properly hot pan, then resting.', check:'Dark crust, and the middle is the doneness you wanted.', mins:20, q:'how to sear steak in a pan'},
+  {id:'fish', title:'Pan-fried fish', focus:'A dry surface, a hot pan, and flipping once.', check:'Crisp outside, flakes easily, did not stick.', mins:15, q:'how to pan fry fish fillets'},
+  {id:'smash-burger', title:'Smash burgers', focus:'Pressing hard and getting a lacy crust.', check:'Crisp edges, juicy centre, cheese fully melted.', mins:20, q:'how to make smash burgers'},
+  {id:'pan-sauce', title:'Chicken or steak with pan sauce', boss:1, focus:'Deglazing the pan and reducing a quick sauce.', check:'The sauce coats the back of a spoon and tastes savoury.', mins:40, q:'how to make a pan sauce'}
+ ]},
+ {title:'Soups, Stews & Sauces', blurb:'Patience, and building flavour in layers.', nodes:[
+  {id:'chicken-soup', title:'Chicken noodle soup', focus:'Sweating veg first and simmering gently.', check:'Clear, savoury broth and noodles that are not soggy.', mins:60, q:'chicken noodle soup from scratch technique'},
+  {id:'pumpkin-soup', title:'Pumpkin soup', focus:'Roasting or sweating first, then blending smooth.', check:'A silky texture and seasoning that tastes finished.', mins:45, q:'how to make pumpkin soup'},
+  {id:'curry', title:'Curry from scratch', focus:'Frying spices to bring out their flavour.', check:'A rich sauce where you can still tell the spices apart.', mins:50, q:'how to make curry from scratch blooming spices'},
+  {id:'stew', title:'Beef stew', focus:'Browning properly, then cooking low and slow.', check:'The meat falls apart and the sauce has body.', mins:150, q:'how to braise beef stew'},
+  {id:'mac-cheese', title:'Mac and cheese from a white sauce', boss:1, focus:'Making a smooth bechamel without lumps.', check:'Silky sauce, no graininess, no raw flour taste.', mins:45, q:'how to make bechamel sauce mac and cheese'}
+ ]},
+ {title:'Oven & Bakes', blurb:'Set it, trust it, check it.', nodes:[
+  {id:'roast-chicken', title:'Roast chicken', focus:'Oven temperature, resting, and using a thermometer.', check:'Crisp skin, juicy meat, and clear juices.', mins:90, q:'how to roast a whole chicken'},
+  {id:'baked-fish', title:'Baked fish and veg', focus:'Different cooking times on one tray.', check:'Fish is just cooked and the veg is tender.', mins:30, q:'baked fish and vegetables on one tray'},
+  {id:'frittata', title:'Frittata', focus:'Starting on the stove and finishing in the oven.', check:'Set through, lightly golden, not rubbery.', mins:30, q:'how to make a frittata'},
+  {id:'lasagne', title:'Lasagne', focus:'Layering, and resting it before you cut.', check:'It holds a clean slice and nothing is watery.', mins:120, q:'how to make lasagne from scratch'},
+  {id:'sunday-roast', title:'Sunday roast with sides', boss:1, focus:'Working backwards from serving time.', check:'Everything is hot at once and you were not panicking.', mins:150, q:'how to time a roast dinner'}
+ ]},
+ {title:'Dough & Sweet', blurb:'Baking is chemistry. Measure it and wait.', nodes:[
+  {id:'pancakes', title:'Pancakes', focus:'Resting the batter and managing pan heat.', check:'Even golden colour and fluffy middles.', mins:25, q:'how to make fluffy pancakes'},
+  {id:'banana-bread', title:'Banana bread or muffins', focus:'Mixing gently and testing for doneness.', check:'A skewer comes out clean and the crumb is tender.', mins:70, q:'banana bread muffin method technique'},
+  {id:'flatbread', title:'Flatbreads', focus:'Kneading and cooking on a very hot pan.', check:'They puff up and stay soft once cooled.', mins:40, q:'how to make flatbread from scratch'},
+  {id:'pizza', title:'Pizza from scratch', focus:'Dough hydration, stretching, and oven heat.', check:'A crisp base with a chewy edge.', mins:120, q:'homemade pizza dough technique'},
+  {id:'no-knead', title:'No-knead loaf', boss:1, focus:'A long rest, steam, and a hot oven.', check:'A crackly crust and an open, airy crumb.', mins:240, q:'no knead bread'}
+ ]},
+ {title:'Dinner Party', blurb:'Put it all together for other people.', nodes:[
+  {id:'menu', title:'Plan a three-course menu', focus:'Choosing dishes that share prep and oven time.', check:'You have a written timeline from first prep to serving.', mins:30, q:'how to plan a dinner party menu and timeline'},
+  {id:'starter', title:'A show-off starter', focus:'Small, neat plating and doing most of it ahead.', check:'It looks tidy and you made it before the guests arrived.', mins:45, q:'easy impressive dinner party starters'},
+  {id:'custard', title:'Custard or panna cotta', focus:'Gentle heat and setting.', check:'Smooth, a little wobbly, no scrambled bits.', mins:40, q:'how to make custard or panna cotta'},
+  {id:'wildcard', title:'A cuisine you have never cooked', focus:'Learning new ingredients and techniques on your own.', check:'You can explain what makes the dish taste the way it does.', mins:90, q:'beginner friendly dish from a new cuisine'},
+  {id:'host', title:'Cook for friends', boss:1, focus:'Hosting, timing, and tasting as you go.', check:'People ate it, and you got to sit down too.', mins:180, q:'dinner party hosting tips for beginners'}
+ ]}
+ ,{title:'Pastry & Cakes', blurb:'Cold butter, light hands, patience.', nodes:[
+  {id:'shortbread', title:'Shortbread or biscuits', focus:'Cold butter and not overworking the dough.', check:'Snaps cleanly, pale gold, buttery not greasy.', mins:50, q:'how to make shortbread'},
+  {id:'scones', title:'Scones', focus:'Light hands and a hot oven.', check:'Tall, fluffy inside, crisp golden top.', mins:40, q:'how to make fluffy scones'},
+  {id:'one-bowl-cake', title:'One-bowl cake', focus:'Mixing method and testing for doneness.', check:'Level top, moist crumb, skewer comes out clean.', mins:70, q:'easy one bowl cake technique'},
+  {id:'tart', title:'Shortcrust tart', focus:'Keeping pastry cold and blind baking.', check:'Crisp base, no soggy bottom, no shrinking.', mins:90, q:'how to make shortcrust pastry tart'},
+  {id:'layer-cake', title:'Layer cake with icing', boss:1, focus:'Levelling, filling and a smooth coat of icing.', check:'Straight sides and it slices cleanly.', mins:180, q:'how to make a layer cake and buttercream'}
+ ]}
+ ,{title:'Noodles & Dumplings', blurb:'Dough, broth and a very hot wok.', nodes:[
+  {id:'noodle-stir-fry', title:'Stir-fried noodles', focus:'Cooking noodles right and keeping the wok hot.', check:'Noodles are springy, not broken or clumped.', mins:25, q:'how to stir fry noodles'},
+  {id:'noodle-soup', title:'Noodle soup', focus:'Layering broth, seasoning and toppings.', check:'Savoury, balanced broth and noodles with bite.', mins:45, q:'easy noodle soup broth technique'},
+  {id:'dumplings', title:'Pan-fried dumplings', focus:'Pleating, and the fry then steam method.', check:'Crisp base, tender wrapper, filling cooked through.', mins:60, q:'how to fold and pan fry dumplings'},
+  {id:'fresh-pasta', title:'Fresh pasta', focus:'Kneading and rolling dough thin.', check:'Even thickness, and it holds together in the water.', mins:90, q:'how to make fresh pasta by hand'},
+  {id:'laksa', title:'Laksa or ramen from scratch', boss:1, focus:'Building a deep broth and balancing many toppings.', check:'Rich broth and every topping cooked on point.', mins:150, q:'how to make laksa from scratch'}
+ ]}
+ ,{title:'Grill & BBQ', blurb:'Fire, smoke and a bit of char.', nodes:[
+  {id:'snags', title:'Sausages and onions', focus:'Moderate heat and turning for even colour.', check:'Browned all over, cooked through, not split and burnt.', mins:25, q:'how to cook sausages on the bbq'},
+  {id:'charred-corn', title:'Charred corn and veg', focus:'Direct heat and char without burning.', check:'Smoky edges and tender middles.', mins:20, q:'how to grill corn and vegetables'},
+  {id:'skewers', title:'Marinated skewers', focus:'Marinating and cooking evenly.', check:'Even colour, juicy inside, nothing raw in the middle.', mins:40, q:'how to make marinated skewers'},
+  {id:'whole-fish', title:'Whole fish', focus:'Scoring, heat, and knowing when it is done.', check:'Skin is crisp and the flesh flakes off the bone.', mins:35, q:'how to cook a whole fish on the grill'},
+  {id:'bbq-feast', title:'BBQ for a crowd', boss:1, focus:'Managing hot and cool zones and timing.', check:'Everything came off at the right time and stayed warm.', mins:120, q:'how to bbq for a crowd'}
+ ]}
+ ,{title:'Knife Work', blurb:'Cuts you can repeat on demand.', nodes:[
+  {id:'c-batonnet', title:'Batonnet and julienne', focus:'Squaring off the veg first, then cutting to 6 mm and 2 mm.', check:'Every stick is the same length and width, with no ragged ends.', mins:30, q:'how to cut julienne and batonnet'},
+  {id:'c-brunoise', title:'Brunoise', focus:'Cutting julienne into 2 mm cubes without crushing.', check:'Tiny cubes so even you cannot tell them apart.', mins:30, q:'how to brunoise vegetables'},
+  {id:'c-herbs', title:'Herbs and shallot', focus:'Chiffonade, fine mince, and a clean shallot dice.', check:'Herbs are cut not bruised, and the shallot is fine and even.', mins:20, q:'how to chiffonade and mince herbs shallot dice'},
+  {id:'c-knife-care', title:'Knife care and a fast onion dice', focus:'Honing before use, and a dice with no wasted root.', check:'A whole onion diced evenly in under a minute.', mins:20, q:'how to hone a chef knife and dice an onion fast'},
+  {id:'c-knife-boss', title:'Mirepoix and crudite plate', boss:1, focus:'Pulling every cut together on one clean plate.', check:'Five cuts, each uniform, plated neatly with no waste.', mins:45, q:'knife skills test culinary school'}
+ ]}
+ ,{title:'Stocks & Mother Sauces', blurb:'The base of classical cooking.', nodes:[
+  {id:'c-stock', title:'White chicken stock', focus:'Cold start, gentle simmer, and skimming.', check:'Clear, light stock with clean flavour and no cloudiness.', mins:240, q:'how to make classic chicken stock'},
+  {id:'c-bechamel', title:'Bechamel', focus:'A white roux and cooking out the flour.', check:'Smooth, coats a spoon, no raw flour taste.', mins:25, q:'how to make bechamel roux'},
+  {id:'c-veloute', title:'Veloute', focus:'A blond roux and a well-flavoured stock.', check:'Silky, lightly golden, and it coats a spoon cleanly.', mins:30, q:'how to make veloute sauce'},
+  {id:'c-hollandaise', title:'Hollandaise', focus:'Controlling heat so the emulsion does not split.', check:'Thick, glossy, warm and well seasoned, with no grease on top.', mins:25, q:'how to make hollandaise sauce'},
+  {id:'c-espagnole', title:'Espagnole to demi-glace', boss:1, focus:'A brown roux, browning bones, and patient reducing.', check:'Deep glossy sauce that coats the spoon and tastes concentrated.', mins:300, q:'how to make espagnole and demi glace'}
+ ]}
+ ,{title:'Classical Methods', blurb:'The core cooking methods, done properly.', nodes:[
+  {id:'c-saute', title:'Saute chicken chasseur', focus:'A hot pan, building fond, and a pan sauce from it.', check:'Golden chicken and a sauce built from the fond.', mins:50, q:'how to saute chicken chasseur'},
+  {id:'c-poach', title:'Fish poached in court-bouillon', focus:'Holding the liquid at a gentle sub-simmer.', check:'Moist, just-opaque fish with no broken flesh.', mins:30, q:'how to poach salmon in court bouillon'},
+  {id:'c-braise', title:'Coq au vin', focus:'Marinating, browning, and reducing the braising liquid.', check:'Tender meat and a glossy, balanced sauce.', mins:150, q:'how to make coq au vin'},
+  {id:'c-baste', title:'Butter-basted pan roast', focus:'Arroser: basting with foaming butter and aromatics, then resting.', check:'Even colour all round and the juices stay in the meat.', mins:35, q:'how to butter baste steak arroser'},
+  {id:'c-confit', title:'Duck leg confit', boss:1, focus:'Curing, slow cooking in fat, and crisping the skin.', check:'Meat falls off the bone and the skin is thin and crisp.', mins:240, q:'how to make duck confit'}
+ ]}
+ ,{title:'Butchery & Fish', blurb:'Break it down, waste nothing.', nodes:[
+  {id:'c-chicken-break', title:'Break down a whole chicken', focus:'Following the joints and keeping portions intact.', check:'Eight clean portions and a carcass ready for stock.', mins:30, q:'how to break down a whole chicken'},
+  {id:'c-fillet', title:'Fillet a round fish', focus:'A flexible knife and cutting along the backbone.', check:'Two clean fillets with little flesh left on the bone.', mins:30, q:'how to fillet a round fish'},
+  {id:'c-shellfish', title:'Prawns and mussels', focus:'Cleaning, deveining, and not overcooking.', check:'Prawns are curled not tight, and every mussel has opened.', mins:30, q:'how to prepare prawns and mussels'},
+  {id:'c-roast-tie', title:'Trim and tie a roast', focus:'Removing silverskin and tying for an even shape.', check:'A neat cylinder that cooks evenly.', mins:40, q:'how to trim and tie a roast butchers knot'},
+  {id:'c-whole-bird', title:'One chicken, three dishes', boss:1, focus:'Using every part with no waste.', check:'Stock, a dish from the legs and a dish from the breasts, nothing thrown out.', mins:120, q:'cook a whole chicken use everything three dishes'}
+ ]}
+ ,{title:'Cold Larder', blurb:'Cold food, emulsions and cures.', nodes:[
+  {id:'c-vinaigrette', title:'Vinaigrette and mayonnaise', focus:'Building a stable emulsion by hand.', check:'Both are thick, glossy and do not split on standing.', mins:25, q:'how to make mayonnaise and vinaigrette emulsion'},
+  {id:'c-pickle', title:'Quick pickles', focus:'Brine ratio and balancing acid with sweetness.', check:'Crisp, bright and well seasoned after one day.', mins:20, q:'how to make quick pickles brine ratio'},
+  {id:'c-cure', title:'Salmon gravlax', focus:'Curing with salt and sugar, then slicing thin.', check:'Firm, translucent flesh, evenly cured and thinly sliced.', mins:30, q:'how to make gravlax cure'},
+  {id:'c-parfait', title:'Chicken liver parfait', focus:'Temperature control and a smooth set.', check:'Silky, pink in the middle, with no graininess.', mins:90, q:'how to make chicken liver parfait'},
+  {id:'c-platter', title:'Cold platter', boss:1, focus:'Balancing flavour, texture and presentation.', check:'Every item on the platter has a purpose and a partner.', mins:90, q:'how to build a charcuterie platter garde manger'}
+ ]}
+ ,{title:'Vegetables & Sides', blurb:'Vegetable cookery with real technique.', nodes:[
+  {id:'c-blanch', title:'Blanched and shocked greens', focus:'Salted water, timing, and the ice bath.', check:'Bright green, tender and still crisp.', mins:15, q:'how to blanch and shock vegetables'},
+  {id:'c-glazed', title:'Glazed carrots', focus:'Cooking in liquid, then reducing to a glaze.', check:'Tender carrots with a shiny glaze, not a puddle.', mins:25, q:'how to make glazed carrots vichy'},
+  {id:'c-puree', title:'Pomme puree', focus:'Drying the potato and emulsifying with butter.', check:'Smooth and silky with no lumps.', mins:40, q:'how to make pomme puree'},
+  {id:'c-gratin', title:'Gratin dauphinois', focus:'Slicing evenly and baking slowly.', check:'Tender slices, creamy not split, golden top.', mins:90, q:'how to make gratin dauphinois'},
+  {id:'c-ratatouille', title:'Ratatouille', boss:1, focus:'Cooking each vegetable separately, then combining.', check:'Distinct pieces and rich flavour, not a mush.', mins:75, q:'how to make ratatouille properly'}
+ ]}
+ ,{title:'Patisserie Basics', blurb:'Precision, temperature and timing.', nodes:[
+  {id:'c-sweet-tart', title:'Sweet pastry tart shell', focus:'Cold butter, resting, and blind baking.', check:'An even golden shell with no shrinkage or cracks.', mins:90, q:'how to make pate sucree tart shell'},
+  {id:'c-pastry-cream', title:'Creme patissiere', focus:'Tempering eggs and cooking out the starch.', check:'Smooth, thick, no lumps and no eggy taste.', mins:30, q:'how to make creme patissiere'},
+  {id:'c-choux', title:'Choux and eclairs', focus:'Drying the panade and baking until set.', check:'Hollow, crisp shells that do not collapse.', mins:90, q:'how to make choux pastry eclairs'},
+  {id:'c-meringue', title:'Meringue', focus:'A clean bowl, adding sugar slowly, and stiff peaks.', check:'Glossy stable peaks and shells that are crisp and dry inside.', mins:90, q:'how to make french meringue'},
+  {id:'c-souffle', title:'Sweet souffle', boss:1, focus:'Folding without deflating and oven timing.', check:'Rises evenly, golden top, creamy in the middle.', mins:60, q:'how to make a chocolate souffle'}
+ ]}
+ ,{title:'Bread & Viennoiserie', blurb:'Fermentation and lamination.', nodes:[
+  {id:'c-starter', title:'Sourdough starter and loaf', focus:'Feeding a starter and reading the dough.', check:'A starter that doubles and a loaf with an open crumb.', mins:600, q:'how to make sourdough starter and loaf'},
+  {id:'c-baguette', title:'Baguette', focus:'Folding, shaping, scoring and steam.', check:'Crackly crust, open crumb and a clean ear.', mins:300, q:'how to make baguette at home'},
+  {id:'c-brioche', title:'Brioche', focus:'Enriched dough, kneaded until it clears the bowl.', check:'Soft, rich, shreddable crumb and a glossy top.', mins:300, q:'how to make brioche'},
+  {id:'c-rough-puff', title:'Rough puff pastry', focus:'Keeping the butter cold and doing the folds.', check:'Distinct flaky layers and an even rise.', mins:150, q:'how to make rough puff pastry'},
+  {id:'c-croissant', title:'Croissants', boss:1, focus:'Lamination, proofing and shaping.', check:'Honeycomb inside and a shatter-crisp outside.', mins:720, q:'how to make croissants laminated dough'}
+ ]}
+ ,{title:'Line Cook', blurb:'Cook fast, cook to order, stay clean.', nodes:[
+  {id:'c-prep', title:'Prep list and mise en place', focus:'Writing a prep list and working through it in order.', check:'Everything is prepped, labelled and in reach before you start cooking.', mins:60, q:'mise en place restaurant prep list'},
+  {id:'c-fry', title:'Tempura and double-fried chips', focus:'Oil temperature and keeping the batter cold.', check:'Light crisp tempura and chips crisp outside, fluffy inside.', mins:45, q:'how to make tempura and double fried chips'},
+  {id:'c-steak-temps', title:'Steak to temperature', focus:'Cooking to order and the touch test.', check:'Rare, medium and well done all correct from one pan.', mins:40, q:'how to cook steak to temperature touch test'},
+  {id:'c-tickets', title:'Cook to tickets', focus:'Reading order tickets and calling timings.', check:'Three orders plated at the right time, hot.', mins:60, q:'how to run a station in a restaurant kitchen tickets'},
+  {id:'c-service-sim', title:'Dinner service for four', boss:1, focus:'Running a mini service from prep to the pass.', check:'All courses out hot, on time and to the same standard.', mins:180, q:'how a dinner service works in a restaurant kitchen'}
+ ]}
+ ,{title:'Menu & Plating', blurb:'Taste, cost and present like a chef.', nodes:[
+  {id:'c-season', title:'Seasoning and tasting discipline', focus:'Tasting at every stage and adjusting salt, acid and fat.', check:'You can say what a dish needs before you add it.', mins:30, q:'how to season food like a chef salt acid fat'},
+  {id:'c-plating', title:'One dish, three plates', focus:'Height, negative space and odd numbers.', check:'Three plates that look different and deliberate.', mins:45, q:'chef plating techniques for beginners'},
+  {id:'c-cost', title:'Cook and cost a dish', focus:'Working out portion cost and a sell price.', check:'A costed recipe with portion cost, food cost percentage and sell price.', mins:40, q:'how to cost a recipe food cost percentage'},
+  {id:'c-menu', title:'Write a four-course menu', focus:'Balancing flavour, texture and workload.', check:'No two courses repeat a technique or main flavour.', mins:45, q:'how to write a restaurant menu'},
+  {id:'c-tasting', title:'Five-course tasting menu', boss:1, focus:'Planning, prepping and serving small plates in order.', check:'Five courses served on time, each with a clear idea.', mins:360, q:'how to cook a five course tasting menu'}
+ ]}
+ ,{title:'Regional Classics', blurb:'Cook the benchmarks of each cuisine.', nodes:[
+  {id:'c-bistro', title:'Steak frites with bearnaise', focus:'Sauce, frying and timing, bistro style.', check:'Steak to temperature, crisp frites and a stable sauce.', mins:60, q:'steak frites bearnaise sauce technique'},
+  {id:'c-ragu', title:'Handmade ragu and gnocchi', focus:'A slow ragu and light gnocchi.', check:'Rich ragu and gnocchi that are pillowy, not gluey.', mins:180, q:'how to make ragu and potato gnocchi'},
+  {id:'c-dashi', title:'Dashi, miso soup and sushi rice', focus:'Clean flavour and careful rice handling.', check:'Clear dashi and rice seasoned evenly with distinct grains.', mins:60, q:'how to make dashi miso soup and sushi rice'},
+  {id:'c-thai', title:'Curry paste from a mortar', focus:'Pounding a paste and balancing sweet, sour, salty and hot.', check:'A fragrant curry where no single flavour dominates.', mins:90, q:'how to make thai curry paste in a mortar'},
+  {id:'c-taqueria', title:'Taqueria night', boss:1, focus:'Fresh tortillas, a braise and three salsas.', check:'Soft tortillas, tender filling and salsas with contrast.', mins:150, q:'how to make tortillas braised meat and salsas'}
+ ]}
+ ,{title:'Signature Work', blurb:'Develop your own cooking.', nodes:[
+  {id:'c-memory', title:'Cook a classic from memory', focus:'Working without a recipe and tasting as you go.', check:'It tastes right and you did not look anything up.', mins:90, q:'how to cook without a recipe like a chef'},
+  {id:'c-iterate', title:'Refine one dish over three attempts', focus:'Changing one thing at a time and recording it.', check:'Your notes show what each change did.', mins:150, q:'how chefs develop and refine a dish'},
+  {id:'c-critic', title:'Cook for a critical eater', focus:'Taking honest feedback and adjusting.', check:'You got specific feedback and acted on it.', mins:90, q:'how chefs take feedback tasting notes'},
+  {id:'c-own-menu', title:'Write and cost your own menu', focus:'A full menu with costings and a prep timeline.', check:'Menu, costings and timeline all on one page.', mins:90, q:'how to plan and cost a restaurant menu'},
+  {id:'c-popup', title:'Pop-up dinner for eight', boss:1, focus:'Running prep, cooking and service as a one-person brigade.', check:'Eight guests served on time and you hit your cost target.', mins:360, q:'how to run a pop up dinner'}
+ ]}
+];
+var STRANDS = [
+ {id:'chef', name:'Professional Chef', hue:4, badge:'Main pathway', blurb:'A culinary school style progression. Knife work, mother sauces, classical technique, butchery, patisserie and running a real service.'},
+ {id:'home', name:'Home Cook', hue:3, blurb:'Get confident making dinner, baking and hosting. Start with eggs and work your way up.'}
+];
+var ROUTES = [
+ {strand:'chef', name:'Brigade Basics', blurb:'Knife work, stocks and the mother sauces. Everything else sits on this.', units:['Knife Work','Stocks & Mother Sauces']},
+ {strand:'chef', name:'Hot Kitchen', blurb:'Classical cooking methods and breaking down whole proteins.', units:['Classical Methods','Butchery & Fish']},
+ {strand:'chef', name:'Larder', blurb:'Cold dishes, emulsions, cures and vegetables done properly.', units:['Cold Larder','Vegetables & Sides']},
+ {strand:'chef', name:'Patisserie', blurb:'Pastry, choux, meringue, bread and lamination.', units:['Patisserie Basics','Bread & Viennoiserie']},
+ {strand:'chef', name:'Service', blurb:'Cooking to order, running a station and building a menu.', units:['Line Cook','Menu & Plating']},
+ {strand:'chef', name:'Capstone', blurb:'Regional classics and your own signature work.', units:['Regional Classics','Signature Work']},
+ {strand:'home', name:'Foundations', blurb:'Learn the stove and the knife.', units:['Heat & Eggs','Knife & Veg']},
+ {strand:'home', name:'Baker', blurb:'Doughs, cakes and pastry.', units:['Dough & Sweet','Pastry & Cakes']},
+ {strand:'home', name:'Noodles & Grains', blurb:'Rice, pasta, noodles and dumplings.', units:['Rice, Pasta & Grains','Noodles & Dumplings']},
+ {strand:'home', name:'Pan & Pot', blurb:'Proteins, soups, stews and sauces.', units:['Pan Proteins','Soups, Stews & Sauces']},
+ {strand:'home', name:'Oven & Grill', blurb:'Roasts, bakes and the BBQ.', units:['Oven & Bakes','Grill & BBQ']},
+ {strand:'home', name:'Host', blurb:'Cook for other people.', units:['Dinner Party']}
+];
+var BYTITLE={}; UNITS.forEach(function(u){ BYTITLE[u.title]=u; });
+UNITS=[]; var FLAT=[];
+ROUTES.forEach(function(r,ri){
+  r.nodes=[];
+  r.units=r.units.map(function(t,k){ var u=BYTITLE[t]; u.route=ri; u.num=k+1; u.gi=UNITS.length; UNITS.push(u); return u; });
+  r.units.forEach(function(u){ u.nodes.forEach(function(n,ni){ n.unit=u.gi; n.route=ri; n.pos=ni; n.idx=FLAT.length; n.ridx=r.nodes.length; n.prev=r.nodes.length?r.nodes[r.nodes.length-1]:null; r.nodes.push(n); FLAT.push(n); }); });
+});
+var NODE = {}; FLAT.forEach(function(n){ NODE[n.id]=n; });
+var RATINGS = ['Flop','Edible','Good','Nailed it'];
+
+/* ------------------------------------------------------------------ *
+ * Helpers
+ * ------------------------------------------------------------------ */
+var $ = function(s,r){ return (r||document).querySelector(s); };
+var esc = function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+var ICON = {
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  lock:'<rect x="5.5" y="10.5" width="13" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
+  cloche:'<path d="M3.5 18.5h17"/><path d="M5.5 18.5a6.5 6.5 0 0 1 13 0"/><path d="M12 9V7.5"/><circle cx="12" cy="6.5" r="1"/>',
+  video:'<rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="M16 10.5l5-2.5v8l-5-2.5z"/>',
+  note:'<path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h6"/>',
+  path:'<circle cx="7" cy="6.5" r="2.5"/><circle cx="17" cy="12" r="2.5"/><circle cx="8" cy="18" r="2.5"/><path d="M9.2 7.7l5.6 2.8M15 13.6l-5 2.8"/>',
+  book:'<path d="M5 4.5h11a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
+  camera:'<path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  flame:'<path d="M12 3c.6 3.2 5 5.2 5 10a5 5 0 0 1-10 0c0-1.9.8-3.2 2-4.2.2 1.6 1 2.6 2 3 0-3 .4-6 1-8.8z"/>',
+  plate:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  photo:'<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10.5" r="1.5"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 16"/>'
+};
+function icon(n){ return '<svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[n]+'</svg>'; }
+
+function newId(){ return 'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function nowIso(){ return new Date().toISOString(); }
+function fmtDay(d){ return new Date(d).toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'}); }
+function fmtTime(d){ return new Date(d).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+function fmtWhen(d){ return fmtDay(d)+', '+fmtTime(d); }
+function fmtMonth(d){ return new Date(d).toLocaleDateString(undefined,{month:'long',year:'numeric'}); }
+function toLocalInput(iso){ var d=new Date(iso), p=function(n){return String(n).padStart(2,'0');}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes()); }
+function fmtMins(m){ return m<60 ? m+' min' : (m/60).toFixed(1).replace('.0','')+' h'; }
+function ytUrl(q){ return 'https://www.youtube.com/results?search_query='+encodeURIComponent(q); }
+function cleanUrl(raw){
+  var u=String(raw||'').trim(); if(!u) return null;
+  if(!/^[a-z][a-z0-9+.\-]*:/i.test(u)) u='https://'+u;
+  try{ var x=new URL(u); if(x.protocol!=='https:' && x.protocol!=='http:') return null; return x.href; }catch(e){ return null; }
+}
+function hostOf(u){ try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return u; } }
+function weekStart(t){ var x=new Date(t); x.setHours(0,0,0,0); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x.getTime(); }
+function prevWeek(w){ var d=new Date(w); d.setDate(d.getDate()-7); return d.getTime(); }
+
+/* ------------------------------------------------------------------ *
+ * State and storage. Always kept on this device; also kept in the
+ * viewer's private Claude storage when it is available.
+ * ------------------------------------------------------------------ */
+var LS_KEY='mise.v1';
+var S = {entries:{}, skips:[], strand:null};
+var tab='path', SHEET=null, ED=null, syncState='device';
+var route=0; try{ var rr=+localStorage.getItem('mise.route'); if(rr>=0 && rr<ROUTES.length) route=rr; }catch(e){}
+
+function loadLocal(){
+  try{ var j=JSON.parse(localStorage.getItem(LS_KEY)); if(j && j.entries){ S.entries=j.entries; S.skips=j.skips||[]; S.strand=j.strand||null; } }catch(e){}
+}
+function saveLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+  catch(e){
+    try{
+      var lite={entries:{},skips:S.skips,strand:S.strand};
+      Object.keys(S.entries).forEach(function(k){ var c=Object.assign({},S.entries[k]); delete c.photo; lite.entries[k]=c; });
+      localStorage.setItem(LS_KEY, JSON.stringify(lite));
+    }catch(e2){}
+  }
+}
+
+var Cloud={entries:null, profile:null, uid:null};
+var cloudSettled, settle; cloudSettled=new Promise(function(r){ settle=r; });
+var chains={};
+function queue(key,fn){ var p=(chains[key]||Promise.resolve()).catch(function(){}).then(fn); chains[key]=p; return p; }
+function cloudFail(){ toast('Saved on this device. Syncing to your account failed.'); }
+function cloudSetEntry(e){
+  return cloudSettled.then(function(){
+    if(!Cloud.entries) return;
+    return queue(e.id,function(){ return Cloud.entries.doc(e.id).set(e); }).catch(cloudFail);
+  });
+}
+function cloudDeleteEntry(id){
+  return cloudSettled.then(function(){
+    if(!Cloud.entries) return;
+    return queue(id,function(){ return Cloud.entries.doc(id).delete(); }).catch(cloudFail);
+  });
+}
+function cloudSetSkips(){
+  return cloudSettled.then(function(){
+    if(!Cloud.profile) return;
+    var skips=S.skips.slice();
+    return queue('profile',function(){ return Cloud.profile.set({skips:skips,strand:S.strand||null}); }).catch(cloudFail);
+  });
+}
+
+function initCloud(){
+  var done=false, timer=setTimeout(function(){ if(!done){ done=true; settle(); } },10000);
+  function finish(){ if(!done){ done=true; clearTimeout(timer); } settle(); }
+  try{
+    if(!window.claude || !window.claude.use){ finish(); return; }
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function(r){
+      var db=r[0], user=r[1];
+      if(!db || !user){ finish(); return null; }
+      return user.id().then(function(uid){
+        if(!uid){ finish(); return; }
+        Cloud.uid=uid;
+        var base=db.doc('data/users/'+uid+'/journal');
+        Cloud.entries=base.collection('entries');
+        Cloud.profile=db.doc('data/users/'+uid+'/profile');
+        syncState='connecting';
+        finish();
+        var flag='mise.migrated.'+uid, seenEntries=false, seenProfile=false;
+        Cloud.entries.onSnapshot(function(snap){
+          if(snap.empty && snap.metadata.fromCache) return;
+          var first=!seenEntries; seenEntries=true;
+          if(snap.empty && !snap.metadata.fromCache && first && !localStorage.getItem(flag)){
+            try{ localStorage.setItem(flag,'1'); }catch(e){}
+            Object.keys(S.entries).forEach(function(k){ cloudSetEntry(S.entries[k]); });
+            if(S.skips.length||S.strand) cloudSetSkips();
+            syncState='synced'; render(); return;
+          }
+          try{ localStorage.setItem(flag,'1'); }catch(e){}
+          var next={};
+          snap.docs.forEach(function(d){ var v=d.data(); if(v){ v.id=d.id; next[d.id]=v; } });
+          S.entries=next;
+          if(!snap.metadata.fromCache) syncState='synced';
+          saveLocal(); refresh();
+        }, function(){ syncState='device'; render(); });
+        Cloud.profile.onSnapshot(function(snap){
+          if(snap.metadata.fromCache && !snap.exists) return;
+          seenProfile=true;
+          var v=snap.exists && snap.data();
+          if(v){
+            if(Array.isArray(v.skips)) S.skips=v.skips;
+            if(v.strand && v.strand!==S.strand){ S.strand=v.strand; ensureRoute(); }
+            saveLocal(); refresh();
+          }
+        }, function(){});
+      });
+    }).catch(function(){ finish(); });
+  }catch(e){ finish(); }
+}
+
+/* ------------------------------------------------------------------ *
+ * Derived progress
+ * ------------------------------------------------------------------ */
+function allEntries(){ return Object.keys(S.entries).map(function(k){ return S.entries[k]; }); }
+function entriesFor(nodeId){
+  return allEntries().filter(function(e){ return e.nodeId===nodeId; })
+    .sort(function(a,b){ return String(b.cookedAt||b.updatedAt).localeCompare(String(a.cookedAt||a.updatedAt)); });
+}
+function isDone(n){ return entriesFor(n.id).some(function(e){ return !!e.cookedAt; }); }
+function nodeStatus(n){
+  var es=entriesFor(n.id);
+  if(es.some(function(e){ return !!e.cookedAt; })) return 'done';
+  var unlocked = !n.prev || isDone(n.prev) || S.skips.indexOf(n.id)>-1 || es.length>0;
+  if(!unlocked) return 'locked';
+  return es.length ? 'learning' : 'open';
+}
+function currentNode(ri){
+  var ns=ROUTES[ri==null?route:ri].nodes;
+  for(var i=0;i<ns.length;i++){ if(nodeStatus(ns[i])!=='done') return ns[i]; }
+  return null;
+}
+function curStrand(){ return S.strand||'chef'; }
+function strandRoutes(){ var a=[]; ROUTES.forEach(function(r,i){ if(r.strand===curStrand()) a.push(i); }); return a; }
+function strandNodes(){ return FLAT.filter(function(n){ return ROUTES[n.route].strand===curStrand(); }); }
+function ensureRoute(){ if(!ROUTES[route] || ROUTES[route].strand!==curStrand()) route=strandRoutes()[0]; }
+function doneCount(){ return FLAT.filter(isDone).length; }
+function unitDone(ui){ return UNITS[ui].nodes.filter(isDone).length; }
+function streakWeeks(){
+  var set={}; allEntries().forEach(function(e){ if(e.cookedAt) set[weekStart(e.cookedAt)]=1; });
+  var w=weekStart(Date.now()); if(!set[w]) w=prevWeek(w);
+  var n=0; while(set[w]){ n++; w=prevWeek(w); } return n;
+}
+function videoCount(){ return allEntries().reduce(function(a,e){ return a+((e.videos&&e.videos.length)||0); },0); }
+function cookedCount(){ return allEntries().filter(function(e){ return !!e.cookedAt; }).length; }
+
+/* ------------------------------------------------------------------ *
+ * Rendering: header, tabs, path, journal
+ * ------------------------------------------------------------------ */
+var main=$('#main'), topEl=$('#top'), tabsEl=$('#tabs'), layer=$('#layer');
+
+function render(){
+  var st=main.scrollTop;
+  if(tab==='path') renderPath(); else renderJournal();
+  renderHeader(); renderTabs(); renderRoutes();
+  main.scrollTop=st;
+  updateUnitLabel();
+}
+function refresh(){ if(SHEET && SHEET.type==='onboard' && S.strand) closeLayer(); render(); if(SHEET && SHEET.type==='node') openNodeCard(SHEET.id,true); }
+
+function renderRoutes(){
+  var el=$('#routes');
+  if(tab!=='path'){ el.hidden=true; return; }
+  el.hidden=false;
+  var first=allEntries().length===0, idxs=strandRoutes();
+  el.innerHTML=idxs.map(function(ri,k){
+    var r=ROUTES[ri], d=r.nodes.filter(isDone).length;
+    return '<button class="rchip r'+ri+'" data-a="route" data-r="'+ri+'" aria-pressed="'+(ri===route)+'"><span class="rn">'+esc(r.name)+'</span><span class="rc">'+(first&&k===0?'Start here':d+'/'+r.nodes.length)+'</span></button>';
+  }).join('')+'<button class="rchip switch" data-a="switch-strand"><span class="rn">Switch</span><span class="rc">'+esc(STRANDS.filter(function(x){return x.id===curStrand();})[0].name)+'</span></button>';
+  var a=el.querySelector('[aria-pressed="true"]'); if(a) el.scrollLeft=Math.max(0,a.offsetLeft-16);
+}
+function renderTabs(){
+  tabsEl.innerHTML =
+   '<button class="tab" data-a="tab" data-t="path"'+(tab==='path'?' aria-current="page"':'')+'>'+icon('path')+'Path</button>'+
+   '<button class="tab" data-a="tab" data-t="journal"'+(tab==='journal'?' aria-current="page"':'')+'>'+icon('book')+'Journal</button>';
+}
+function renderHeader(){
+  if(tab==='path'){
+    topEl.innerHTML =
+     '<div class="t-left"><div class="mono" id="u-kicker">'+esc(ROUTES[route].name)+' · Unit 1</div><div class="t-title" id="u-title">'+esc(ROUTES[route].units[0].title)+'</div></div>'+
+     '<div class="pills"><span class="pill p-flame" title="Weeks in a row you cooked">'+icon('flame')+streakWeeks()+'<span class="sr"> week streak</span></span>'+
+     '<span class="pill p-count" title="Meals cooked on the path">'+icon('plate')+strandNodes().filter(isDone).length+'/'+strandNodes().length+'</span></div>';
+  } else {
+    topEl.innerHTML =
+     '<div class="t-left"><div class="mono">Everything you cooked</div><div class="t-title">Journal</div></div>'+
+     '<button class="btn small" data-a="free">'+icon('plus').replace('<svg','<svg width="18" height="18"')+'Log a meal</button>';
+  }
+}
+function updateUnitLabel(){
+  if(tab!=='path') return;
+  var k=$('#u-kicker'), t=$('#u-title'); if(!k||!t) return;
+  var secs=main.querySelectorAll('.unit'), cur=0, top=main.getBoundingClientRect().top;
+  for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top <= top+60) cur=i; }
+  var u=ROUTES[route].units[cur]; if(!u) return;
+  k.textContent=ROUTES[route].name+' · Unit '+u.num; t.textContent=u.title;
+}
+
+function renderPath(){
+  var cur=currentNode(), r=ROUTES[route], html='';
+  if(allEntries().length===0){
+    html+='<section class="intro"><h2>Cook your way up</h2><ol>'+
+      '<li><b>Start with '+esc(ROUTES[strandRoutes()[0]].name)+'</b>, then pick the routes you want to specialise in.</li>'+
+      '<li><b>Tap the meal</b> with the bouncing START tag and watch a video or two.</li>'+
+      '<li><b>Cook it</b>, then log what you learned. The date stamps itself.</li></ol></section>';
+  }
+  r.units.forEach(function(u){
+    var ui=u.gi, d=unitDone(ui);
+    html+='<section class="unit r'+route+'" id="unit-'+ui+'" aria-label="'+esc(r.name)+' unit '+u.num+': '+esc(u.title)+'">'+
+      '<div class="banner"><div><div class="mono">'+esc(r.name)+' · Unit '+u.num+(d===u.nodes.length?' complete':'')+'</div><h2>'+esc(u.title)+'</h2><p>'+esc(u.blurb)+'</p></div>'+
+      '<span class="b-prog">'+d+'/'+u.nodes.length+'</span></div><ol class="nodes">';
+    u.nodes.forEach(function(n){
+      var st=nodeStatus(n), dx=Math.round(Math.sin(n.ridx*Math.PI/2.4)*62);
+      var glyph = st==='done' ? icon('check') : st==='locked' ? icon('lock') : (n.boss ? icon('cloche') : String(n.pos+1));
+      var tag = (cur && cur.id===n.id) ? '<span class="start">'+(st==='learning'?'CONTINUE':'START')+'</span>' : '';
+      var dot = st==='learning' ? '<span class="dot"></span>' : '';
+      var stateTxt={done:'cooked',locked:'locked',open:'ready',learning:'in progress'}[st];
+      html+='<li class="node st-'+st+(n.boss?' boss':'')+(tag?' cur':'')+'" style="--dx:'+dx+'px">'+tag+
+        '<button class="plate" data-a="node" data-id="'+esc(n.id)+'" aria-label="'+esc(n.title)+', '+stateTxt+'">'+glyph+dot+'</button>'+
+        '<span class="nlabel">'+esc(n.title)+'</span></li>';
+    });
+    html+='</ol></section>';
+  });
+  main.innerHTML=html;
+}
+
+function ratingLabel(e){
+  if(!e.cookedAt) return '<span class="rate draft">Not cooked yet</span>';
+  return e.rating ? '<span class="rate">'+RATINGS[e.rating-1]+'</span>' : '';
+}
+function ticketHtml(e,extraCls){
+  var node=e.nodeId?NODE[e.nodeId]:null;
+  var title=node?node.title:(e.title||'Untitled meal');
+  var unit=node?(ROUTES[node.route].name+' · '+UNITS[node.unit].title):'Off the path';
+  var when=e.cookedAt?fmtWhen(e.cookedAt):'Draft';
+  var vids=(e.videos&&e.videos.length)||0;
+  var photo=(typeof e.photo==='string' && e.photo.indexOf('data:image/jpeg;base64,')===0)?'<img class="thumb" data-zoom alt="Photo of the meal" src="'+e.photo+'">':'';
+  return '<button class="ticket'+(node?' r'+node.route:'')+(extraCls||'')+'" data-a="open-entry" data-eid="'+esc(e.id)+'">'+
+    '<div class="tk-head"><span class="mono">'+esc(when)+'</span>'+ratingLabel(e)+'</div><div class="perf"></div>'+
+    '<div class="tk-row"><div class="tk-body"><div class="tk-title">'+esc(title)+'</div><div class="tk-unit">'+esc(unit)+'</div>'+
+    (e.learned?'<div class="tk-learned">'+esc(e.learned)+'</div>':'')+
+    '</div>'+photo+'</div>'+
+    ((vids||e.notes)?'<div class="tk-foot">'+(vids?'<span>'+icon('video')+vids+(vids===1?' video':' videos')+'</span>':'')+(e.notes?'<span>'+icon('note')+'Notes</span>':'')+'</div>':'')+
+    '</button>';
+}
+function renderJournal(){
+  var es=allEntries();
+  var drafts=es.filter(function(e){ return !e.cookedAt; }).sort(function(a,b){ return String(b.updatedAt).localeCompare(String(a.updatedAt)); });
+  var cooked=es.filter(function(e){ return !!e.cookedAt; }).sort(function(a,b){ return String(b.cookedAt).localeCompare(String(a.cookedAt)); });
+  var html='<div class="stats">'+
+    '<div class="stat"><b>'+cookedCount()+'</b><span class="mono">Cooked</span></div>'+
+    '<div class="stat"><b>'+videoCount()+'</b><span class="mono">Videos</span></div>'+
+    '<div class="stat"><b>'+streakWeeks()+'</b><span class="mono">Wk streak</span></div></div>';
+  if(!es.length){
+    html+='<div class="ticket ghost" aria-label="Example entry"><div class="tk-head"><span class="mono">Example</span><span class="rate">Good</span></div><div class="perf"></div>'+
+      '<div class="tk-title">Scrambled eggs</div><div class="tk-unit">Foundations · Heat &amp; Eggs</div>'+
+      '<div class="tk-learned">Take the pan off the heat before they look done. They finish cooking on the plate.</div>'+
+      '<div class="tk-foot"><span>'+icon('video')+'2 videos</span><span>'+icon('note')+'Notes</span></div></div>'+
+      '<p class="note" style="margin-top:14px">Your cooks show up here, newest first. Head to the Path and start with the glowing meal.</p>'+
+      '<div class="actions"><button class="btn block" data-a="tab" data-t="path">Go to the path</button></div>';
+  } else {
+    if(drafts.length){
+      html+='<h2 class="mono month">In the works</h2><ul class="list">'+drafts.map(function(e){ return '<li>'+ticketHtml(e)+'</li>'; }).join('')+'</ul>';
+    }
+    var last=null;
+    cooked.forEach(function(e,i){
+      var m=fmtMonth(e.cookedAt);
+      if(m!==last){ if(last!==null) html+='</ul>'; html+='<h2 class="mono month">'+esc(m)+'</h2><ul class="list">'; last=m; }
+      html+='<li>'+ticketHtml(e)+'</li>';
+    });
+    if(last!==null) html+='</ul>';
+    html+='<div class="foot"><button class="link" data-a="copy-text">Copy journal as text</button></div>';
+  }
+  html+='<div class="foot"><button class="link" data-a="switch-strand">Change strand</button></div>';
+  html+='<div class="foot"><div class="sync '+(syncState==='synced'?'on':'')+'"><i></i>'+
+    (syncState==='synced'?'Saved to your Claude account and this device':'Saved on this device')+'</div></div>';
+  main.innerHTML=html;
+}
+
+/* ------------------------------------------------------------------ *
+ * Sheets
+ * ------------------------------------------------------------------ */
+function openLayer(inner,cls){
+  layer.innerHTML='<div class="scrim" data-a="scrim"><div class="'+(cls||'sheet')+'" role="dialog" aria-modal="true" id="sheet">'+inner+'</div></div>';
+}
+function closeLayer(){ layer.innerHTML=''; SHEET=null; ED=null; }
+
+function briefHtml(n){
+  return '<div class="brief r'+n.route+'"><div><b>Focus</b>'+esc(n.focus)+'</div><div><b>'+(ROUTES[n.route].strand==='chef'?'Chef standard':'You have got it when')+'</b>'+esc(n.check)+'</div></div>';
+}
+function openNodeCard(id,keepScroll){
+  var n=NODE[id]; if(!n) return;
+  var st=nodeStatus(n), es=entriesFor(id), prev=$('#sheet'), sc=prev?prev.scrollTop:0;
+  SHEET={type:'node',id:id};
+  var primary='';
+  if(st==='locked'){
+    primary='<p class="note">Cook the meal before this one first, or skip ahead if you already know it.</p>'+
+            '<button class="btn alt block" data-a="unlock" data-id="'+esc(id)+'">Unlock this meal</button>';
+  } else if(st==='learning'){
+    var draft=es.filter(function(e){ return !e.cookedAt; })[0];
+    primary='<button class="btn block" data-a="open-entry" data-eid="'+esc(draft.id)+'">Continue your notes</button>';
+  } else if(st==='open'){
+    primary='<button class="btn block" data-a="start" data-id="'+esc(id)+'">Start this meal</button>';
+  } else {
+    primary='<button class="btn alt block" data-a="start" data-id="'+esc(id)+'">Log another cook</button>';
+  }
+  var list=es.length?'<ul class="attempts">'+es.map(function(e){
+    return '<li><button class="attempt" data-a="open-entry" data-eid="'+esc(e.id)+'"><span><b>'+(e.cookedAt?esc(fmtWhen(e.cookedAt)):'Draft')+'</b></span>'+ratingLabel(e)+'</button></li>';
+  }).join('')+'</ul>':'';
+  openLayer(
+    '<div class="sh-top"><span class="mono">'+esc(ROUTES[n.route].name)+' · Unit '+UNITS[n.unit].num+' · '+(n.boss?'Final meal':'Meal '+(n.pos+1)+' of '+UNITS[n.unit].nodes.length)+' · About '+fmtMins(n.mins)+'</span>'+
+    '<button class="x" data-a="close" aria-label="Close">'+icon('x')+'</button></div>'+
+    '<h2 class="ed-title">'+esc(n.title)+'</h2>'+briefHtml(n)+
+    '<a class="link" href="'+ytUrl(n.q)+'" target="_blank" rel="noopener noreferrer">'+icon('video')+'Find a video to learn it</a>'+
+    list+'<div class="actions">'+primary+'</div>','sheet r'+n.route);
+  if(keepScroll){ var s=$('#sheet'); if(s) s.scrollTop=sc; }
+}
+
+function blankEntry(nodeId){
+  return {id:newId(), nodeId:nodeId||null, title:'', cookedAt:null, learned:'', videos:[], notes:'', rating:0, photo:null, createdAt:nowIso(), updatedAt:nowIso()};
+}
+function openEditor(entry,isNew){
+  ED={entry:JSON.parse(JSON.stringify(entry)), isNew:isNew, dirty:false, vurl:'', vtitle:'', confirm:null, err:'', dateOpen:false};
+  SHEET={type:'editor'};
+  renderEditor();
+}
+function renderEditor(keepScroll){
+  var e=ED.entry, n=e.nodeId?NODE[e.nodeId]:null, prev=$('#sheet'), sc=prev?prev.scrollTop:0;
+  var head =
+    '<div class="sh-top"><span class="mono">'+(n?esc(ROUTES[n.route].name)+' · '+esc(UNITS[n.unit].title):'Off the path')+'</span>'+
+    '<button class="x" data-a="ed-close" aria-label="Close">'+icon('x')+'</button></div>';
+  var title = n ? '<h2 class="ed-title">'+esc(n.title)+'</h2>'+briefHtml(n)
+    : '<div class="field" style="margin-top:4px"><label for="f-title">What did you make?</label><input type="text" id="f-title" value="'+esc(e.title)+'" placeholder="e.g. Leftover chilli on toast" autocomplete="off"></div>';
+  var when = e.cookedAt
+    ? '<div class="when"><div><div class="mono">Made</div><div class="t">'+esc(fmtWhen(e.cookedAt))+'</div></div><button class="link" data-a="ed-date">Change</button></div>'+
+      (ED.dateOpen?'<div class="field" style="margin-top:8px"><label for="f-date">Date and time</label><input type="datetime-local" id="f-date" value="'+esc(toLocalInput(e.cookedAt))+'"></div>':'')
+    : '<div class="when"><div><div class="mono">Made</div><div class="t">Not cooked yet</div></div></div><p class="note">The date and time stamp themselves when you tap Mark as cooked.</p>';
+  var rate='<div class="field"><div class="lbl" id="l-rate">How did it turn out?</div><div class="chips" role="group" aria-labelledby="l-rate">'+
+    RATINGS.map(function(r,i){ return '<button class="chip" data-a="ed-rate" data-v="'+(i+1)+'" aria-pressed="'+(e.rating===i+1)+'">'+r+'</button>'; }).join('')+'</div></div>';
+  var photoOk = typeof e.photo==='string' && e.photo.indexOf('data:image/jpeg;base64,')===0;
+  var photo='<div class="field"><div class="lbl">Photo <span class="hint">(optional)</span></div><div class="photo">'+
+    (photoOk?'<img data-zoom alt="Photo of the meal, tap to enlarge" src="'+e.photo+'"><button class="link danger" data-a="ed-photo-clear">Remove</button>'
+            :'<label class="filebtn">'+icon('camera')+'Add a photo<input type="file" id="f-photo" accept="image/*"></label>')+'</div></div>';
+  var learned='<div class="field"><label for="f-learned">What I learned</label><textarea id="f-learned" placeholder="One thing that clicked, or one thing that went wrong">'+esc(e.learned)+'</textarea></div>';
+  var vids='<div class="field"><div class="lbl">Videos I watched</div>'+
+    (e.videos.length?'<ul class="vids">'+e.videos.map(function(v,i){
+        var u=cleanUrl(v.url); if(!u) return '';
+        return '<li class="vid"><a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(v.title||hostOf(u))+'<small>'+esc(hostOf(u))+'</small></a>'+
+               '<button class="x" data-a="ed-delv" data-i="'+i+'" aria-label="Remove video">'+icon('x')+'</button></li>';
+      }).join('')+'</ul>':'')+
+    '<div class="addv"><input type="url" id="f-vurl" inputmode="url" placeholder="Paste a video link" value="'+esc(ED.vurl)+'" autocomplete="off" autocapitalize="off">'+
+    '<button class="btn alt small" data-a="ed-addv">Add</button>'+
+    '<input class="t2" type="text" id="f-vtitle" placeholder="Title (optional)" value="'+esc(ED.vtitle)+'" autocomplete="off"></div>'+
+    (n?'<a class="link" href="'+ytUrl(n.q)+'" target="_blank" rel="noopener noreferrer">'+icon('video')+'Find one on YouTube</a>':'')+'</div>';
+  var notes='<div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" placeholder="Timings, swaps, what to change next time">'+esc(e.notes)+'</textarea></div>';
+  var btns = e.cookedAt
+    ? '<button class="btn block" data-a="ed-save">Save</button>'
+    : '<button class="btn block" data-a="ed-cooked">Mark as cooked</button><button class="btn alt block" data-a="ed-later">Save for later</button>';
+  var conf='';
+  if(ED.confirm==='discard') conf='<div class="confirm" role="alert"><span>Discard your changes?</span><div><button class="btn alt" data-a="ed-keep">Keep editing</button><button class="btn dng" data-a="ed-discard">Discard</button></div></div>';
+  if(ED.confirm==='delete') conf='<div class="confirm" role="alert"><span>Delete this log for good?</span><div><button class="btn alt" data-a="ed-keep">Cancel</button><button class="btn dng" data-a="ed-delete-yes">Delete</button></div></div>';
+  var del = !ED.isNew ? '<button class="link danger" data-a="ed-delete">Delete this log</button>' : '';
+  openLayer(head+title+when+rate+photo+learned+vids+notes+(ED.err?'<p class="err" role="alert">'+esc(ED.err)+'</p>':'')+'<div class="actions">'+btns+del+'</div>'+conf,'sheet'+(n?' r'+n.route:''));
+  var s=$('#sheet'); if(s && keepScroll) s.scrollTop=sc;
+}
+
+function tryCloseEditor(){
+  if(ED && ED.dirty && ED.confirm!=='discard'){ ED.confirm='discard'; renderEditor(true); var s=$('#sheet'); if(s) s.scrollTop=s.scrollHeight; return; }
+  closeLayer();
+}
+function commitPending(){
+  var u=cleanUrl(ED.vurl);
+  if(ED.vurl.trim() && u){ ED.entry.videos.push({url:u,title:ED.vtitle.trim()}); ED.vurl=''; ED.vtitle=''; }
+}
+function commit(markCooked){
+  var e=ED.entry;
+  commitPending();
+  if(!e.nodeId && !e.title.trim()){ ED.err='Give the meal a name first.'; renderEditor(true); var s=$('#sheet'); if(s) s.scrollTop=s.scrollHeight; return; }
+  var firstTime = markCooked && !e.cookedAt;
+  var node = e.nodeId?NODE[e.nodeId]:null;
+  var wasDone = node ? isDone(node) : true;
+  if(firstTime) e.cookedAt=nowIso();
+  e.title=e.title.trim(); e.updatedAt=nowIso();
+  S.entries[e.id]=e; saveLocal(); cloudSetEntry(e);
+  var celebrate = node && firstTime && !wasDone;
+  closeLayer(); render();
+  if(celebrate) showCelebration(node);
+  else toast(firstTime?'Logged. Nice cook.':'Saved.');
+}
+function showCelebration(n){
+  var u=UNITS[n.unit], d=unitDone(n.unit), total=u.nodes.length, unitFinished=d===total;
+  var nxt=currentNode(n.route);
+  SHEET={type:'cel',next:nxt&&nxt.id};
+  layer.innerHTML='<div class="scrim r'+n.route+'" data-a="cel-close"><div class="cel" role="dialog" aria-modal="true" id="sheet">'+
+    '<div class="plate">'+icon('check')+'</div>'+
+    '<h2>'+(unitFinished?esc(u.title)+' complete':esc(n.title)+' cooked')+'</h2>'+
+    '<p>'+(unitFinished?(nxt?'Next up: '+esc(UNITS[nxt.unit].title)+'.':'You finished this whole route.'):d+' of '+total+' in '+esc(u.title)+'.')+'</p>'+
+    '<div class="bar" aria-hidden="true"><i style="width:'+Math.round(d/total*100)+'%"></i></div>'+
+    '<button class="btn block" data-a="cel-close">Keep going</button></div></div>';
+}
+
+/* ------------------------------------------------------------------ *
+ * Onboarding: pick a strand, then a first route
+ * ------------------------------------------------------------------ */
+var ONB={strand:null};
+function strandCount(id){ var n=FLAT.filter(function(x){ return ROUTES[x.route].strand===id; }).length; var rs=ROUTES.filter(function(r){ return r.strand===id; }); var us=0; rs.forEach(function(r){ us+=r.units.length; }); return n+' meals · '+us+' units · '+rs.length+' routes'; }
+function openOnboarding(step){
+  SHEET={type:'onboard'};
+  var cancel = S.strand ? '<button class="link" data-a="onb-cancel">Cancel</button>' : '<span></span>';
+  var inner='';
+  if(step===1){
+    inner='<div class="onb-nav"><span class="mono">Welcome to Mise</span>'+cancel+'</div>'+
+      '<h1>What kind of cook are you becoming?</h1><p class="sub">Pick a strand. You can switch whenever you like and your journal stays put.</p>'+
+      STRANDS.map(function(st,i){
+        var rs=ROUTES.filter(function(r){ return r.strand===st.id; });
+        return '<button class="scard r'+st.hue+(i===0?' main':'')+'" data-a="pick-strand" data-s="'+st.id+'">'+
+          (st.badge?'<span class="badge">'+esc(st.badge)+'</span>':'')+
+          '<h2>'+esc(st.name)+'</h2><p>'+esc(st.blurb)+'</p>'+
+          '<div class="tags">'+rs.map(function(r){ return '<span>'+esc(r.name)+'</span>'; }).join('')+'</div>'+
+          '<div class="meta">'+strandCount(st.id)+'</div></button>';
+      }).join('');
+  } else {
+    var st=STRANDS.filter(function(x){ return x.id===ONB.strand; })[0];
+    var rs=[]; ROUTES.forEach(function(r,i){ if(r.strand===st.id) rs.push(i); });
+    inner='<div class="onb-nav"><button class="link" data-a="onb-back">Back</button>'+cancel+'</div>'+
+      '<h1>Pick your first route</h1><p class="sub">'+esc(st.name)+' has '+rs.length+' routes. Start with the first one if you are unsure. The rest unlock whenever you want them.</p>'+
+      rs.map(function(ri,k){
+        var r=ROUTES[ri], mins=0;
+        return '<button class="scard route r'+ri+'" data-a="pick-route" data-r="'+ri+'">'+
+          (k===0?'<span class="badge">Recommended start</span>':'')+
+          '<h2>'+esc(r.name)+'</h2><p>'+esc(r.blurb)+'</p>'+
+          '<div class="meta">'+r.nodes.length+' meals · '+r.units.map(function(u){ return esc(u.title); }).join(' · ')+'</div></button>';
+      }).join('');
+  }
+  layer.innerHTML='<div class="scrim onb"><div class="onboard" role="dialog" aria-modal="true" aria-label="Choose your strand" id="sheet">'+inner+'</div></div>';
+  var sh=$('#sheet'); if(sh) sh.scrollTop=0;
+}
+
+/* ------------------------------------------------------------------ *
+ * Photos: shrink to a small JPEG so it syncs quickly.
+ * ------------------------------------------------------------------ */
+function shrink(file){
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file), img=new Image();
+    img.onload=function(){
+      URL.revokeObjectURL(url);
+      var max=720,q=.62;
+      for(var t=0;t<3;t++){
+        var s=Math.min(1,max/Math.max(img.width,img.height)), c=document.createElement('canvas');
+        c.width=Math.max(1,Math.round(img.width*s)); c.height=Math.max(1,Math.round(img.height*s));
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        var out=c.toDataURL('image/jpeg',q);
+        if(out.length<160000 || t===2){ res(out); return; }
+        max-=140; q-=.1;
+      }
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); rej(new Error('bad image')); };
+    img.src=url;
+  });
+}
+
+/* ------------------------------------------------------------------ *
+ * Misc UI
+ * ------------------------------------------------------------------ */
+var toastTimer;
+function toast(msg){
+  var t=$('#toast'); t.textContent=msg; t.hidden=false;
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.hidden=true; },2600);
+}
+function scrollToCurrent(id){
+  var c=id?NODE[id]:currentNode(); if(!c) return;
+  var el=main.querySelector('.plate[data-id="'+c.id+'"]'); if(!el) return;
+  var y=el.getBoundingClientRect().top-main.getBoundingClientRect().top+main.scrollTop;
+  if(y<main.clientHeight*0.7){ main.scrollTop=0; return; }
+  main.scrollTop=y-main.clientHeight/2+40;
+}
+function journalText(){
+  var cooked=allEntries().filter(function(e){ return !!e.cookedAt; }).sort(function(a,b){ return String(a.cookedAt).localeCompare(String(b.cookedAt)); });
+  return cooked.map(function(e){
+    var n=e.nodeId?NODE[e.nodeId]:null, lines=[(n?n.title:e.title)+'  ('+fmtWhen(e.cookedAt)+')'];
+    if(e.rating) lines.push('Turned out: '+RATINGS[e.rating-1]);
+    if(e.learned) lines.push('Learned: '+e.learned);
+    (e.videos||[]).forEach(function(v){ var u=cleanUrl(v.url); if(u) lines.push('Video: '+(v.title?v.title+' ':'')+u); });
+    if(e.notes) lines.push('Notes: '+e.notes);
+    return lines.join('\n');
+  }).join('\n\n');
+}
+function copyText(txt){
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      return navigator.clipboard.writeText(txt).then(function(){ toast('Journal copied.'); }).catch(function(){ toast('Copy was blocked by this browser.'); });
+    }
+  }catch(e){}
+  toast('Copy was blocked by this browser.');
+}
+
+/* ------------------------------------------------------------------ *
+ * Events
+ * ------------------------------------------------------------------ */
+var lb=$('#lightbox');
+function unzoom(){ lb.hidden=true; lb.innerHTML=''; }
+document.addEventListener('click',function(ev){
+  if(!lb.hidden){ unzoom(); return; }
+  var z=ev.target.closest('[data-zoom]');
+  if(z){ ev.preventDefault(); lb.innerHTML='<img alt="Photo of the meal" src="'+z.getAttribute('src')+'"><button class="x" aria-label="Close photo">'+icon('x')+'</button>'; lb.hidden=false; return; }
+  var t=ev.target.closest('[data-a]'); if(!t) return;
+  var a=t.dataset.a;
+  if(a==='scrim'){ if(ev.target!==t) return; if(SHEET&&SHEET.type==='editor') tryCloseEditor(); else closeLayer(); return; }
+  if(a==='cel-close'){ if(t.classList.contains('scrim') && ev.target!==t) return; var nx=SHEET&&SHEET.next; closeLayer(); if(nx) scrollToCurrent(nx); return; }
+  if(a==='tab'){ tab=t.dataset.t; render(); main.scrollTop=0; if(tab==='path') scrollToCurrent(); return; }
+  if(a==='route'){ route=+t.dataset.r; try{ localStorage.setItem('mise.route',String(route)); }catch(e){} render(); main.scrollTop=0; scrollToCurrent(); return; }
+  if(a==='switch-strand'){ openOnboarding(1); return; }
+  if(a==='pick-strand'){ ONB.strand=t.dataset.s; openOnboarding(2); return; }
+  if(a==='onb-back'){ openOnboarding(1); return; }
+  if(a==='onb-cancel'){ closeLayer(); return; }
+  if(a==='pick-route'){
+    S.strand=ONB.strand; route=+t.dataset.r; try{ localStorage.setItem('mise.route',String(route)); }catch(e){}
+    saveLocal(); cloudSetSkips(); closeLayer(); tab='path'; render(); main.scrollTop=0; scrollToCurrent(); return;
+  }
+  if(a==='node'){ openNodeCard(t.dataset.id); return; }
+  if(a==='close'){ closeLayer(); return; }
+  if(a==='unlock'){ var id=t.dataset.id; if(S.skips.indexOf(id)<0) S.skips.push(id); saveLocal(); cloudSetSkips(); closeLayer(); render(); toast('Unlocked.'); return; }
+  if(a==='start'){ openEditor(blankEntry(t.dataset.id),true); return; }
+  if(a==='free'){ openEditor(blankEntry(null),true); return; }
+  if(a==='open-entry'){ var e=S.entries[t.dataset.eid]; if(e) openEditor(e,false); return; }
+  if(a==='copy-text'){ var txt=journalText(); if(!txt) toast('Nothing to copy yet.'); else copyText(txt); return; }
+  if(!ED) return;
+  if(a==='ed-close'){ tryCloseEditor(); return; }
+  if(a==='ed-keep'){ ED.confirm=null; renderEditor(true); return; }
+  if(a==='ed-discard'){ closeLayer(); return; }
+  if(a==='ed-rate'){ var v=+t.dataset.v; ED.entry.rating = ED.entry.rating===v?0:v; ED.dirty=true; renderEditor(true); return; }
+  if(a==='ed-date'){ ED.dateOpen=!ED.dateOpen; renderEditor(true); return; }
+  if(a==='ed-photo-clear'){ ED.entry.photo=null; ED.dirty=true; renderEditor(true); return; }
+  if(a==='ed-addv'){
+    var u=cleanUrl(ED.vurl);
+    if(!u){ ED.err = ED.vurl.trim() ? 'That does not look like a web link.' : ''; renderEditor(true); return; }
+    ED.entry.videos.push({url:u,title:ED.vtitle.trim()}); ED.vurl=''; ED.vtitle=''; ED.err=''; ED.dirty=true; renderEditor(true); return;
+  }
+  if(a==='ed-delv'){ ED.entry.videos.splice(+t.dataset.i,1); ED.dirty=true; renderEditor(true); return; }
+  if(a==='ed-save'){ commit(false); return; }
+  if(a==='ed-later'){ commit(false); return; }
+  if(a==='ed-cooked'){ commit(true); return; }
+  if(a==='ed-delete'){ ED.confirm='delete'; renderEditor(true); var s=$('#sheet'); if(s) s.scrollTop=s.scrollHeight; return; }
+  if(a==='ed-delete-yes'){
+    var id2=ED.entry.id; delete S.entries[id2]; saveLocal(); cloudDeleteEntry(id2); closeLayer(); render(); toast('Deleted.'); return;
+  }
+});
+document.addEventListener('input',function(ev){
+  if(!ED) return; var id=ev.target.id;
+  if(id==='f-title'){ ED.entry.title=ev.target.value; ED.dirty=true; }
+  else if(id==='f-learned'){ ED.entry.learned=ev.target.value; ED.dirty=true; }
+  else if(id==='f-notes'){ ED.entry.notes=ev.target.value; ED.dirty=true; }
+  else if(id==='f-vurl'){ ED.vurl=ev.target.value; }
+  else if(id==='f-vtitle'){ ED.vtitle=ev.target.value; }
+});
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Escape' && !lb.hidden){ unzoom(); return; }
+  if(ev.key==='Escape' && layer.firstChild && !(SHEET&&SHEET.type==='onboard' && !S.strand)){ if(SHEET&&SHEET.type==='editor') tryCloseEditor(); else closeLayer(); return; }
+  if(ev.key==='Enter' && ED && (ev.target.id==='f-vurl' || ev.target.id==='f-vtitle')){
+    ev.preventDefault(); var b=$('[data-a="ed-addv"]'); if(b) b.click();
+  }
+});
+document.addEventListener('change',function(ev){
+  if(!ED) return; var id=ev.target.id;
+  if(id==='f-date'){
+    var d=new Date(ev.target.value);
+    if(!isNaN(d.getTime())){ ED.entry.cookedAt=d.toISOString(); ED.dirty=true; ED.dateOpen=false; renderEditor(true); }
+  } else if(id==='f-photo'){
+    var f=ev.target.files && ev.target.files[0]; if(!f) return;
+    shrink(f).then(function(url){ if(!ED) return; ED.entry.photo=url; ED.dirty=true; renderEditor(true); })
+      .catch(function(){ if(!ED) return; ED.err='Could not read that photo. Try another one.'; renderEditor(true); });
+  }
+});
+var raf=0;
+main.addEventListener('scroll',function(){ if(raf) return; raf=requestAnimationFrame(function(){ raf=0; updateUnitLabel(); }); },{passive:true});
+
+/* ------------------------------------------------------------------ *
+ * Go
+ * ------------------------------------------------------------------ */
+loadLocal();
+if(!S.strand && allEntries().length) S.strand='home';
+ensureRoute();
+render();
+scrollToCurrent();
+if(!S.strand) openOnboarding(1);
+initCloud();
+window.__mise = {S:function(){return S;}, FLAT:FLAT};
+})();
+</script>
+</body>
+</html>
