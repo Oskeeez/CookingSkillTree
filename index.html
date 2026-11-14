@@ -79,6 +79,7 @@ a{color:inherit}
 .tab svg{width:25px;height:25px}
 .tab[aria-current="page"]{color:var(--c0)}
 
+.btn svg{width:20px;height:20px;flex:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;background:var(--c0);color:#fff;font:700 16px/1 var(--body);box-shadow:0 4px 0 var(--c0d);text-align:center}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--c0d)}
 .btn.alt{background:#fff;color:var(--c0);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
@@ -182,6 +183,14 @@ input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
 .chip[aria-pressed="true"]{border-color:var(--u-d);background:var(--u);color:var(--u-ink)}
 .photo{display:flex;align-items:center;gap:12px}
 .photo img{width:88px;height:88px;border-radius:14px;object-fit:cover}
+.grade{margin-top:12px;border-radius:18px;border:2px solid var(--u);background:#fff;padding:14px}
+.grade .g-top{display:flex;align-items:center;gap:12px}
+.grade .g-score{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--u);color:var(--u-ink);font:700 22px/1 var(--display)}
+.grade .g-verdict{font:600 16px/1.3 var(--display)}
+.grade h3{font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--u-ink);margin:12px 0 5px}
+.grade ul{padding-left:18px;display:grid;gap:4px;font-size:15px}
+.grade .g-meta{margin-top:10px;font-size:12px;color:var(--muted)}
+.gbtn{margin-top:10px;width:100%}
 .filebtn{position:relative;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:14px;border:2px dashed var(--u-d);background:var(--u-t);font-weight:600;color:var(--u-ink);cursor:pointer}
 .filebtn svg{width:20px;height:20px}
 .filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -209,6 +218,68 @@ input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
 
 #toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:min(92vw,420px);padding:11px 16px;border-radius:14px;background:var(--ink);color:#fff;font-weight:600;font-size:14px;z-index:40;text-align:center}
 #toast[hidden]{display:none}
+.rbtns{display:grid;gap:10px;margin:12px 0}
+.ing{list-style:none;padding:0;display:grid;gap:0;margin:6px 0 12px;border:2px solid var(--u);border-radius:16px;background:#fff;overflow:hidden}
+.ing li{padding:11px 14px;border-top:1px solid var(--line);font-size:15px}
+.ing li:first-child{border-top:0}
+.rsteps{padding-left:0;list-style:none;display:grid;gap:10px;counter-reset:s;margin:6px 0 12px}
+.rsteps li{counter-increment:s;padding:12px 14px 12px 46px;border-radius:14px;background:var(--u-t);position:relative;font-size:15px}
+.rsteps li:before{content:counter(s);position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--u);color:var(--u-ink);font:700 13px/24px var(--display);text-align:center}
+.rsteps b{display:block;font-weight:700}
+.rsteps em{display:block;margin-top:4px;font-style:normal;color:var(--u-ink);font-size:13px}
+.h3m{font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--u-ink);margin:14px 0 4px}
+#cook{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:var(--u-t);padding:calc(14px + env(safe-area-inset-top)) 18px calc(16px + env(safe-area-inset-bottom))}
+#cook[hidden]{display:none}
+#cook .ck-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#cook .ck-bar{height:8px;border-radius:99px;background:rgba(255,255,255,.7);margin:12px 0 6px;overflow:hidden}
+#cook .ck-bar i{display:block;height:100%;background:var(--u-d);border-radius:99px;transition:width .25s}
+#cook .ck-body{flex:1;overflow:auto;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:8px 0}
+#cook h2{font:700 30px/1.1 var(--display);color:var(--u-ink)}
+#cook .ck-t{font-size:22px;line-height:1.4}
+#cook .ck-cue{padding:14px 16px;border-radius:18px;background:#fff;border:2px solid var(--u);font-size:17px}
+#cook .ck-cue b{display:block;font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--u-ink);margin-bottom:5px}
+#cook .ck-time{font:700 46px/1 var(--display);color:var(--u-ink);text-align:center}
+#cook .ck-nav{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+#cook .ck-ing{max-height:45vh;overflow:auto}
+#main.mapmode{padding:0;overflow:hidden;position:relative}
+#mapwrap{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#fff 0,var(--bg) 70%)}
+#map{width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#map:active{cursor:grabbing}
+.mapctl{position:absolute;right:12px;bottom:14px;display:grid;gap:8px;z-index:3}
+.mbtn{width:46px;height:46px;border-radius:50%;background:#fff;border:2px solid var(--line);box-shadow:0 3px 0 var(--line);display:grid;place-items:center;font:700 22px/1 var(--display);color:var(--c0)}
+.mbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.mbtn.fit{font-size:11px;font-family:var(--mono);letter-spacing:.04em}
+#maphint{position:absolute;left:14px;right:70px;bottom:14px;z-index:3;background:#fff;border:2px solid var(--line);border-radius:18px;padding:12px 14px;font-size:14px;box-shadow:0 4px 0 var(--line)}
+#maphint b{display:block;font-family:var(--display);font-size:16px;margin-bottom:2px}
+#maphint button{margin-top:6px}
+.mn{color:var(--u-ink);cursor:pointer;outline:none}
+.mn.st-locked{color:#9a93ab}
+.mb{fill:var(--u);stroke:var(--u-d);stroke-width:4}
+.st-open .mb,.st-learning .mb{fill:#fff}
+.st-locked .mb{fill:var(--lock);stroke:var(--lock-d)}
+.mn:focus-visible .mb{stroke:var(--c0);stroke-width:7}
+.mn text{fill:currentColor;stroke:none;font:700 17px var(--display);text-anchor:middle;dominant-baseline:central}
+.mn text.ttl{font:600 12.5px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}
+.mn.st-locked text.ttl{fill:#8a85a0}
+.pulse{fill:none;stroke:var(--u-d);stroke-width:3}
+@media (prefers-reduced-motion:no-preference){.pulse{transform-box:fill-box;transform-origin:center;animation:mp 1.8s ease-out infinite}}
+@keyframes mp{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.55)}}
+#map.far .ttl{display:none}
+.mseg{fill:none;stroke:var(--lock-d);stroke-width:7;stroke-linecap:round}
+.mseg.on{stroke:var(--u-d)}
+.mseg.x{stroke-width:3;opacity:.55}
+.ring{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:4 10}
+.mpill,.mend{cursor:pointer}
+.mpill rect,.mend rect{fill:var(--u);stroke:var(--u-d);stroke-width:3}
+.mpill text,.mend text{fill:var(--u-ink);stroke:none;text-anchor:middle;dominant-baseline:central;font:700 14px var(--display)}
+.mpill text.c,.mend text.c{font:500 11.5px var(--mono)}
+.mend{display:none}
+#map.vfar .mpill{display:none}
+#map.vfar .mend{display:inline}
+.hub circle{fill:var(--c0);stroke:var(--c0d);stroke-width:5}
+.hub text{fill:#fff;stroke:none;text-anchor:middle;dominant-baseline:central;font:700 20px var(--display)}
+.hub text.c{font:500 11px var(--mono)}
+.rchip.sw[aria-pressed="true"]{background:var(--u);border-color:var(--u-d)}
 #lightbox{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(43,39,80,.88)}
 #lightbox[hidden]{display:none}
 #lightbox img{max-width:100%;max-height:100%;border-radius:18px;object-fit:contain}
@@ -249,6 +320,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
 <div id="layer"></div>
 <div id="toast" role="status" hidden></div>
 <div id="lightbox" hidden></div>
+<div id="cook" hidden role="dialog" aria-modal="true" aria-label="Cooking mode"></div>
 
 <script>
 (function(){
@@ -447,7 +519,167 @@ ROUTES.forEach(function(r,ri){
   r.units.forEach(function(u){ u.nodes.forEach(function(n,ni){ n.unit=u.gi; n.route=ri; n.pos=ni; n.idx=FLAT.length; n.ridx=r.nodes.length; n.prev=r.nodes.length?r.nodes[r.nodes.length-1]:null; r.nodes.push(n); FLAT.push(n); }); });
 });
 var NODE = {}; FLAT.forEach(function(n){ NODE[n.id]=n; });
+
+
+/* ================================================================== *
+ * THE TREE: edit the connections here, nothing else needs to change.
+ * One line per meal:   meal <- prerequisite, prerequisite
+ *   - A meal unlocks when ALL its prerequisites are cooked (or you tap Unlock).
+ *   - The FIRST prerequisite is the main branch line. Any others are drawn as thin cross-links.
+ *   - A meal with nothing after the arrow is a starting node, open from day one.
+ *   - Prerequisites can come from any branch, so branches can cross.
+ *   - Use the meal ids from the lists above. A meal with no line here simply
+ *     follows the one before it in its route.
+ * The layout (rings, angles, line routing) is worked out from these lines.
+ * ================================================================== */
+var TREE_LINKS = [
+  '# Foundations',
+  'boiled-eggs <-',
+  'scrambled <- boiled-eggs',
+  'fried-egg <- boiled-eggs',
+  'omelette <- scrambled, fried-egg',
+  'chopped-salad <-',
+  'roast-veg <- chopped-salad',
+  'stir-fry <- chopped-salad',
+  'mushrooms <- chopped-salad, fried-egg',
+  'breakfast <- fried-egg, mushrooms, snags',
+  'tray-bake <- roast-veg, chicken-thighs',
+  '# Baker',
+  'pancakes <-',
+  'banana-bread <- pancakes',
+  'flatbread <- pancakes',
+  'shortbread <- pancakes',
+  'scones <- shortbread',
+  'one-bowl-cake <- banana-bread',
+  'no-knead <- flatbread',
+  'pizza <- flatbread, tomato-pasta',
+  'tart <- shortbread, custard',
+  'layer-cake <- one-bowl-cake, custard',
+  '# Noodles and grains',
+  'rice <-',
+  'aglio <- rice',
+  'tomato-pasta <- aglio, chopped-salad',
+  'fried-rice <- rice, stir-fry, scrambled',
+  'risotto <- rice, chicken-soup',
+  'noodle-stir-fry <- aglio, stir-fry',
+  'noodle-soup <- noodle-stir-fry, chicken-soup',
+  'dumplings <- flatbread, mushrooms',
+  'fresh-pasta <- tomato-pasta, flatbread',
+  'laksa <- noodle-soup, curry',
+  '# Pan and pot',
+  'chicken-thighs <-',
+  'steak <- chicken-thighs',
+  'fish <- chicken-thighs',
+  'smash-burger <- steak',
+  'pan-sauce <- steak, mushrooms',
+  'chicken-soup <- chicken-thighs, chopped-salad',
+  'pumpkin-soup <- chicken-soup, roast-veg',
+  'curry <- chicken-thighs, rice',
+  'stew <- steak, chicken-soup',
+  'mac-cheese <- pan-sauce, aglio',
+  '# Oven and grill',
+  'snags <-',
+  'roast-chicken <- chicken-thighs, roast-veg',
+  'baked-fish <- fish, roast-veg',
+  'frittata <- omelette, roast-veg',
+  'lasagne <- tomato-pasta, mac-cheese',
+  'sunday-roast <- roast-chicken, roast-veg, pan-sauce',
+  'charred-corn <- snags, chopped-salad',
+  'skewers <- snags, steak',
+  'whole-fish <- baked-fish, snags',
+  'bbq-feast <- skewers, charred-corn, whole-fish',
+  '# Host',
+  'custard <- scrambled',
+  'menu <- tray-bake, mac-cheese',
+  'starter <- dumplings, fish',
+  'wildcard <- curry, dumplings',
+  'host <- menu, starter, custard, sunday-roast'
+].join('\n');
+(function buildGraph(){
+  var given={};
+  TREE_LINKS.split('\n').forEach(function(line){
+    line=line.trim(); if(!line||line[0]==='#') return;
+    var m=line.split('<-'); if(m.length!==2){ console.warn('Tree: cannot read line',line); return; }
+    var id=m[0].trim();
+    if(!NODE[id]){ console.warn('Tree: unknown meal',id); return; }
+    given[id]=m[1].split(',').map(function(x){ return x.trim(); }).filter(Boolean).filter(function(x){
+      if(!NODE[x]){ console.warn('Tree: unknown prerequisite',x,'for',id); return false; } if(x===id) return false; return true; });
+  });
+  FLAT.forEach(function(n){ n.pre = given[n.id] ? given[n.id].map(function(x){ return NODE[x]; }) : (n.prev?[n.prev]:[]); n.next=[]; });
+  var state={};
+  function visit(n,path){
+    if(state[n.id]==='ok') return; if(state[n.id]==='busy') return;
+    state[n.id]='busy';
+    n.pre=n.pre.filter(function(p){ if(state[p.id]==='busy'){ console.warn('Tree: loop, dropping',p.id,'->',n.id); return false; } visit(p); return true; });
+    state[n.id]='ok';
+  }
+  FLAT.forEach(function(n){ visit(n); });
+  FLAT.forEach(function(n){ n.pre.forEach(function(p){ p.next.push(n); }); });
+  var memo={};
+  function depth(n){ if(memo[n.id]!=null) return memo[n.id]; var d=0; n.pre.forEach(function(p){ d=Math.max(d,depth(p)+1); }); return memo[n.id]=d; }
+  FLAT.forEach(function(n){ n.depth=depth(n); });
+})();
+
 var RATINGS = ['Flop','Edible','Good','Nailed it'];
+var RECIPES = {
+ 'boiled-eggs':{serves:2,ing:['4 large eggs, fridge cold','Ice','Salt (optional)'],steps:[
+  {h:'Boil the water',t:'Fill a saucepan with enough water to cover the eggs by 2 cm. Bring it to a steady rolling boil.',cue:'Big bubbles breaking the surface, not just tiny ones on the bottom.'},
+  {h:'Lower in the eggs',t:'Use a spoon to lower the eggs in gently so they do not crack. Start your timer straight away. The timer is set for soft and jammy (6 min). For firm but creamy cook 9 min, for fully hard 11 min.',cue:'Water keeps gently bubbling. Turn the heat down a little if the eggs are bouncing around.',s:360},
+  {h:'Ice bath',t:'Fill a bowl with ice and cold water. Move the eggs straight in and leave them for 5 minutes. This stops the cooking and makes them easier to peel.',cue:'Eggs feel cool to hold, not warm.',s:300},
+  {h:'Peel',t:'Tap the egg all over on the bench, roll it lightly, then peel from the fat end under a little running water. Cut one open to check the yolk.',cue:'Soft: glossy orange centre. Firm: set all the way through but still deep yellow. Hard: pale yellow, no green ring.'}]},
+ 'scrambled':{serves:1,ing:['3 eggs','15 g butter','Pinch of salt','1 slice of toast, to serve'],steps:[
+  {h:'Whisk',t:'Crack the eggs into a bowl, add the salt and whisk with a fork until no clear white is left. No milk needed.',cue:'One even yellow, a few small bubbles on top.'},
+  {h:'Melt the butter',t:'Put a non-stick pan on low to medium heat and add the butter. Let it melt without browning.',cue:'Butter foams gently but stays pale.'},
+  {h:'Stir slowly',t:'Pour in the eggs. Wait 10 seconds, then push a spatula slowly across the bottom of the pan in long strokes. Keep going for about 2 minutes.',cue:'Soft, small curds forming and a loose creamy sauce between them.',s:120},
+  {h:'Stop early',t:'Take the pan off the heat while the eggs still look a bit wet and shiny. They keep cooking from the pan heat. Tip onto the toast right away.',cue:'Shiny and soft like thick custard. Matte and dry means you went too far.'}]},
+ 'fried-egg':{serves:1,ing:['1 to 2 eggs','1 tbsp neutral oil or 10 g butter','Salt and pepper'],steps:[
+  {h:'Heat the pan',t:'Put a small non-stick or cast iron pan on medium heat for about 1 minute. Add the oil.',cue:'Oil shimmers and spreads thinly. A drop of water sizzles.',s:60},
+  {h:'Add the egg',t:'Crack the egg into a small cup first, then slide it into the pan so the yolk stays whole. Season with salt.',cue:'The edges bubble and turn white straight away.'},
+  {h:'Cook the white',t:'Cook for 2 minutes until the white is fully set. For a crisp lacy edge, tilt the pan and spoon the hot oil over the edge. For a set top, cover with a lid for 30 seconds.',cue:'White is opaque with no clear jelly near the yolk. Yolk still wobbles.',s:120},
+  {h:'Plate',t:'Lift out with a flat spatula. Season with pepper.',cue:'Golden crisp edge, runny yolk.'}]},
+ 'omelette':{serves:1,ing:['3 eggs','10 g butter','Pinch of salt','Chopped chives (optional)'],steps:[
+  {h:'Whisk well',t:'Whisk the eggs and salt hard until completely smooth with no streaks.',cue:'Pale yellow and uniform.'},
+  {h:'Heat the pan',t:'Heat a 20 cm non-stick pan on medium to high. Add the butter and swirl.',cue:'Butter foams but does not brown.'},
+  {h:'Stir then stop',t:'Pour in the eggs. Stir quickly with a spatula for about 20 seconds, shaking the pan, like making very small scrambled eggs. Then stop stirring and let the base set for 10 seconds.',cue:'Surface is still wet and glossy, base is just set.',s:30},
+  {h:'Fold and roll',t:'Tilt the pan, fold one third over, then roll the omelette out onto a plate seam side down. Rub the top with a little butter for shine and add chives.',cue:'Pale smooth outside with no browning, soft custardy centre.'}]},
+ 'breakfast':{serves:2,ing:['4 pork sausages','4 rashers bacon','2 tomatoes, halved','200 g button mushrooms','4 eggs','4 slices bread','Butter','2 tbsp oil','Salt and pepper','1 can baked beans (optional)'],steps:[
+  {h:'Plan and prep',t:'Halve the tomatoes, quarter the mushrooms and get plates in a low oven (100 C) to warm. Know the order: sausages first, then bacon and tomatoes, then mushrooms, then toast and eggs last.',cue:'Everything cut and laid out before any heat goes on.'},
+  {h:'Sausages',t:'Heat 1 tbsp oil in a large pan on medium. Add the sausages and cook for 12 to 15 minutes, turning often.',cue:'Evenly browned all over. No pink when you cut one open.',s:720},
+  {h:'Bacon and tomatoes',t:'Move the sausages to the warm oven. In the same pan, add bacon and tomato halves cut side down. Cook 3 to 4 minutes, flip, and cook 2 more. Warm the beans in a small pot if using.',cue:'Bacon crisp at the edges, tomatoes soft with a browned face.',s:300},
+  {h:'Mushrooms',t:'Move bacon and tomatoes to the oven. Add the mushrooms to the pan with a little oil and leave them alone for 3 minutes, then stir and season.',cue:'Golden brown with no liquid left.',s:240},
+  {h:'Toast',t:'Put the bread in the toaster now so it lands hot. Butter it as it pops.',cue:'Golden and crisp.'},
+  {h:'Eggs',t:'Wipe out the pan, add a little oil on medium heat and fry the eggs for about 2 minutes. Plate everything straight away.',cue:'Everything on the plate is hot. Whites set, yolks runny.',s:120}]},
+ 'chopped-salad':{serves:2,ing:['1 Lebanese cucumber','2 ripe tomatoes','1/2 red onion','1 small capsicum','3 tbsp extra virgin olive oil','1 tbsp lemon juice or red wine vinegar','1 tsp Dijon mustard','Salt and pepper'],steps:[
+  {h:'Make the dressing',t:'In a bowl, whisk the mustard, lemon juice and a good pinch of salt. Add the oil a little at a time while whisking, then season with pepper.',cue:'Thick and glossy, not separated into oil and juice.'},
+  {h:'Set up your knife',t:'Put a damp cloth under the board so it does not slide. Curl your fingertips back like a claw and guide the knife with your knuckles.',cue:'Your fingertips are tucked behind your knuckles.'},
+  {h:'Dice evenly',t:'Cut everything into roughly 1 cm dice. Cut the onion finer than the rest. Make flat sides first so nothing rolls.',cue:'Pieces are about the same size so every bite has everything.'},
+  {h:'Dress and serve',t:'Toss the veg with the dressing just before serving so it stays crisp. Taste and add salt if it needs it.',cue:'Pieces lightly coated, with no pool of dressing at the bottom of the bowl.'}]},
+ 'roast-veg':{serves:4,ing:['600 g mixed veg (carrot, pumpkin, potato, red onion)','2 tbsp olive oil','1 tsp salt','Black pepper'],steps:[
+  {h:'Heat the oven',t:'Heat the oven to 220 C (200 C fan) and put a large tray in to heat up.',cue:'A hot tray helps the veg sizzle on contact.'},
+  {h:'Cut evenly',t:'Cut everything into pieces about 3 cm. Cut harder veg (carrot, potato) a bit smaller than soft veg (pumpkin, onion).',cue:'Pieces are all similar in size so they finish together.'},
+  {h:'Oil and season',t:'Toss in a bowl with the oil, salt and pepper until every piece is shiny.',cue:'All surfaces glossy with no dry patches.'},
+  {h:'Spread out',t:'Tip onto the hot tray in one layer with a little space between pieces. Use two trays if needed. Crowding makes them steam.',cue:'No pieces sitting on top of each other.'},
+  {h:'Roast and turn',t:'Roast for 20 minutes, turn the pieces, then roast another 15 to 25 minutes.',cue:'Deep golden edges, soft in the middle when a knife slides in.',s:1200}]},
+ 'stir-fry':{serves:2,ing:['1 small head broccoli, cut into florets','1 carrot, sliced thin','1 capsicum, sliced','100 g snow peas','3 garlic cloves, sliced','2 cm ginger, grated','2 tbsp neutral oil','2 tbsp soy sauce','1 tsp sesame oil','1 tsp sugar','1 tbsp water','Cooked rice, to serve'],steps:[
+  {h:'Prep everything first',t:'Stir fries go fast, so cut all the veg and mix the soy, sesame oil, sugar and water in a small bowl before you start. Keep the veg in separate piles by cook time.',cue:'Everything within arm reach and nothing left to chop.'},
+  {h:'Get the pan very hot',t:'Heat a wok or large pan on high for 2 minutes. Add 1 tbsp oil.',cue:'Oil ripples and just starts to smoke.',s:120},
+  {h:'Hard veg first',t:'Add the carrot and broccoli. Keep them moving for 2 to 3 minutes. Add a splash of water if they catch.',cue:'Bright green and a little charred in places.',s:150},
+  {h:'Soft veg',t:'Add the capsicum and snow peas and toss for 1 minute.',cue:'Still crisp with a bit of bite.',s:60},
+  {h:'Garlic, ginger and sauce',t:'Push the veg aside, add a little oil, then the garlic and ginger for 20 seconds. Pour in the sauce and toss for 30 seconds. Serve at once over rice.',cue:'Glossy sauce coating the veg. Crisp-tender, not grey or limp.',s:50}]},
+ 'mushrooms':{serves:2,ing:['300 g button or cup mushrooms','1 tbsp neutral oil','15 g butter','Salt','Thyme leaves (optional)'],steps:[
+  {h:'Clean and cut',t:'Wipe the mushrooms with a damp cloth. Do not soak them. Halve or quarter so pieces are about the same size.',cue:'Dry surfaces, even pieces.'},
+  {h:'Hot dry pan',t:'Heat a wide pan on medium to high. Add the oil once it is hot.',cue:'Oil shimmers.'},
+  {h:'Leave them alone',t:'Add mushrooms in a single layer, with space between. Do not stir or salt yet. Leave for 3 minutes.',cue:'Undersides turning golden brown.',s:180},
+  {h:'Keep cooking',t:'Stir and cook another 4 to 5 minutes until the liquid they release has cooked away.',cue:'Pan is dry and the mushrooms are deep golden.',s:270},
+  {h:'Finish',t:'Add the butter, thyme and a pinch of salt. Toss for 30 seconds.',cue:'Glossy, golden and no liquid left in the pan.'}]},
+ 'tray-bake':{serves:4,ing:['600 g baby potatoes, halved','4 to 6 chicken thighs, skin on','1 red onion, cut in wedges','1 zucchini, cut in chunks','1 capsicum, cut in chunks','3 tbsp olive oil','1 tsp smoked paprika','1 tsp salt','1 lemon, halved'],steps:[
+  {h:'Plan the timing',t:'Potatoes take longest, chicken next, soft veg last. Heat the oven to 220 C (200 C fan) with a large tray inside. Cut everything before you start.',cue:'Veg cut into similar chunks, grouped by cook time.'},
+  {h:'Potatoes first',t:'Toss the potatoes with 1 tbsp oil and half the salt. Spread on the hot tray and roast for 15 minutes.',cue:'Edges just starting to colour.',s:900},
+  {h:'Add chicken and onion',t:'Rub the chicken with 1 tbsp oil, the paprika and the rest of the salt. Add it to the tray skin side up with the onion wedges. Roast 20 minutes.',cue:'Chicken skin turning golden and starting to crisp.',s:1200},
+  {h:'Add soft veg',t:'Toss the zucchini and capsicum in the last of the oil. Add them to the tray and roast another 15 to 20 minutes.',cue:'Juices run clear when you pierce the thickest thigh, and the veg has browned edges.',s:1080},
+  {h:'Rest and finish',t:'Squeeze over the lemon and rest the tray for 5 minutes before serving.',cue:'Everything is hot and finishes together, nothing overcooked.',s:300}]}
+};
+
 
 /* ------------------------------------------------------------------ *
  * Helpers
@@ -496,6 +728,7 @@ function prevWeek(w){ var d=new Date(w); d.setDate(d.getDate()-7); return d.getT
 var LS_KEY='mise.v1';
 var S = {entries:{}, skips:[], strand:null};
 var tab='path', SHEET=null, ED=null, syncState='device';
+var SAMPLE=null, GRADING=false;
 var route=0; try{ var rr=+localStorage.getItem('mise.route'); if(rr>=0 && rr<ROUTES.length) route=rr; }catch(e){}
 
 function loadLocal(){
@@ -597,13 +830,13 @@ function isDone(n){ return entriesFor(n.id).some(function(e){ return !!e.cookedA
 function nodeStatus(n){
   var es=entriesFor(n.id);
   if(es.some(function(e){ return !!e.cookedAt; })) return 'done';
-  var unlocked = !n.prev || isDone(n.prev) || S.skips.indexOf(n.id)>-1 || es.length>0;
+  var unlocked = n.pre.every(isDone) || S.skips.indexOf(n.id)>-1 || es.length>0;
   if(!unlocked) return 'locked';
   return es.length ? 'learning' : 'open';
 }
 function currentNode(ri){
   var ns=ROUTES[ri==null?route:ri].nodes;
-  for(var i=0;i<ns.length;i++){ if(nodeStatus(ns[i])!=='done') return ns[i]; }
+  for(var i=0;i<ns.length;i++){ var st=nodeStatus(ns[i]); if(st==='open'||st==='learning') return ns[i]; }
   return null;
 }
 function curStrand(){ return S.strand||'chef'; }
@@ -627,10 +860,10 @@ var main=$('#main'), topEl=$('#top'), tabsEl=$('#tabs'), layer=$('#layer');
 
 function render(){
   var st=main.scrollTop;
+  main.className = tab==='path' ? 'mapmode' : '';
   if(tab==='path') renderPath(); else renderJournal();
   renderHeader(); renderTabs(); renderRoutes();
-  main.scrollTop=st;
-  updateUnitLabel();
+  if(tab!=='path') main.scrollTop=st;
 }
 function refresh(){ if(SHEET && SHEET.type==='onboard' && S.strand) closeLayer(); render(); if(SHEET && SHEET.type==='node') openNodeCard(SHEET.id,true); }
 
@@ -638,12 +871,10 @@ function renderRoutes(){
   var el=$('#routes');
   if(tab!=='path'){ el.hidden=true; return; }
   el.hidden=false;
-  var first=allEntries().length===0, idxs=strandRoutes();
-  el.innerHTML=idxs.map(function(ri,k){
-    var r=ROUTES[ri], d=r.nodes.filter(isDone).length;
-    return '<button class="rchip r'+ri+'" data-a="route" data-r="'+ri+'" aria-pressed="'+(ri===route)+'"><span class="rn">'+esc(r.name)+'</span><span class="rc">'+(first&&k===0?'Start here':d+'/'+r.nodes.length)+'</span></button>';
-  }).join('')+'<button class="rchip switch" data-a="switch-strand"><span class="rn">Switch</span><span class="rc">'+esc(STRANDS.filter(function(x){return x.id===curStrand();})[0].name)+'</span></button>';
-  var a=el.querySelector('[aria-pressed="true"]'); if(a) el.scrollLeft=Math.max(0,a.offsetLeft-16);
+  el.innerHTML=STRANDS.map(function(st){
+    var ns=FLAT.filter(function(n){ return ROUTES[n.route].strand===st.id; }), d=ns.filter(isDone).length;
+    return '<button class="rchip sw r'+st.hue+'" data-a="strand" data-s="'+st.id+'" aria-pressed="'+(st.id===curStrand())+'"><span class="rn">'+esc(st.id==='chef'?'Professional Chef':'Home Cook')+'</span><span class="rc">'+d+'/'+ns.length+'</span></button>';
+  }).join('')+'<button class="rchip switch" data-a="nextup"><span class="rn">Next up</span><span class="rc">Where to go</span></button>';
 }
 function renderTabs(){
   tabsEl.innerHTML =
@@ -653,7 +884,7 @@ function renderTabs(){
 function renderHeader(){
   if(tab==='path'){
     topEl.innerHTML =
-     '<div class="t-left"><div class="mono" id="u-kicker">'+esc(ROUTES[route].name)+' · Unit 1</div><div class="t-title" id="u-title">'+esc(ROUTES[route].units[0].title)+'</div></div>'+
+     '<div class="t-left"><div class="mono">Skill tree</div><div class="t-title">'+esc(STRANDS.filter(function(x){return x.id===curStrand();})[0].name)+'</div></div>'+
      '<div class="pills"><span class="pill p-flame" title="Weeks in a row you cooked">'+icon('flame')+streakWeeks()+'<span class="sr"> week streak</span></span>'+
      '<span class="pill p-count" title="Meals cooked on the path">'+icon('plate')+strandNodes().filter(isDone).length+'/'+strandNodes().length+'</span></div>';
   } else {
@@ -663,7 +894,7 @@ function renderHeader(){
   }
 }
 function updateUnitLabel(){
-  if(tab!=='path') return;
+  return;
   var k=$('#u-kicker'), t=$('#u-title'); if(!k||!t) return;
   var secs=main.querySelectorAll('.unit'), cur=0, top=main.getBoundingClientRect().top;
   for(var i=0;i<secs.length;i++){ if(secs[i].getBoundingClientRect().top <= top+60) cur=i; }
@@ -671,32 +902,232 @@ function updateUnitLabel(){
   k.textContent=ROUTES[route].name+' · Unit '+u.num; t.textContent=u.title;
 }
 
-function renderPath(){
-  var cur=currentNode(), r=ROUTES[route], html='';
-  if(allEntries().length===0){
-    html+='<section class="intro"><h2>Cook your way up</h2><ol>'+
-      '<li><b>Start with '+esc(ROUTES[strandRoutes()[0]].name)+'</b>, then pick the routes you want to specialise in.</li>'+
-      '<li><b>Tap the meal</b> with the bouncing START tag and watch a video or two.</li>'+
-      '<li><b>Cook it</b>, then log what you learned. The date stamps itself.</li></ol></section>';
+
+/* ------------------------------------------------------------------ *
+ * Radial skill tree: a hub in the middle, one branch per route.
+ * Pan, pinch and tap. Meals unlock in order inside a branch, but every branch is open from the start.
+ * ------------------------------------------------------------------ */
+var R0=225, STEP=95, PILL_R=105, MINSEP=112;
+var STRAND_INFO={};
+function normA(a){ a%=2*Math.PI; return a<0?a+2*Math.PI:a; }
+function spreadRing(items,r,minChord){
+  /* items: [{a:angle}] on a circle of radius r. Push neighbours apart until each pair is at least minChord apart. */
+  if(items.length<2) return;
+  var g=minChord/r;
+  if(items.length*g>2*Math.PI) g=2*Math.PI/items.length*.98;
+  for(var it=0;it<200;it++){
+    items.sort(function(x,y){ return normA(x.a)-normA(y.a); });
+    var moved=false;
+    for(var i=0;i<items.length;i++){
+      var A=items[i], B=items[(i+1)%items.length];
+      var gap=normA(B.a-A.a); if(items.length===2 && i===1) gap=normA(B.a-A.a);
+      if(gap<g-1e-4){ var push=(g-gap)/2; A.a-=push; B.a+=push; moved=true; }
+    }
+    if(!moved) break;
   }
-  r.units.forEach(function(u){
-    var ui=u.gi, d=unitDone(ui);
-    html+='<section class="unit r'+route+'" id="unit-'+ui+'" aria-label="'+esc(r.name)+' unit '+u.num+': '+esc(u.title)+'">'+
-      '<div class="banner"><div><div class="mono">'+esc(r.name)+' · Unit '+u.num+(d===u.nodes.length?' complete':'')+'</div><h2>'+esc(u.title)+'</h2><p>'+esc(u.blurb)+'</p></div>'+
-      '<span class="b-prog">'+d+'/'+u.nodes.length+'</span></div><ol class="nodes">';
-    u.nodes.forEach(function(n){
-      var st=nodeStatus(n), dx=Math.round(Math.sin(n.ridx*Math.PI/2.4)*62);
-      var glyph = st==='done' ? icon('check') : st==='locked' ? icon('lock') : (n.boss ? icon('cloche') : String(n.pos+1));
-      var tag = (cur && cur.id===n.id) ? '<span class="start">'+(st==='learning'?'CONTINUE':'START')+'</span>' : '';
-      var dot = st==='learning' ? '<span class="dot"></span>' : '';
-      var stateTxt={done:'cooked',locked:'locked',open:'ready',learning:'in progress'}[st];
-      html+='<li class="node st-'+st+(n.boss?' boss':'')+(tag?' cur':'')+'" style="--dx:'+dx+'px">'+tag+
-        '<button class="plate" data-a="node" data-id="'+esc(n.id)+'" aria-label="'+esc(n.title)+', '+stateTxt+'">'+glyph+dot+'</button>'+
-        '<span class="nlabel">'+esc(n.title)+'</span></li>';
+}
+function layoutAll(){
+  STRANDS.forEach(function(st){
+    var ris=[]; ROUTES.forEach(function(r,i){ if(r.strand===st.id) ris.push(i); });
+    var ns=FLAT.filter(function(n){ return ROUTES[n.route].strand===st.id; });
+    var maxD=0; ns.forEach(function(n){ maxD=Math.max(maxD,n.depth); });
+    var byD=[]; for(var d=0;d<=maxD;d++) byD.push([]);
+    ns.forEach(function(n){ byD[n.depth].push(n); });
+    byD.forEach(function(arr){ arr.sort(function(x,y){ return x.idx-y.idx; }); });
+    var roots=byD[0], secOf={};
+    ris.forEach(function(ri,i){ secOf[ri]=(-90+360/ris.length*i)*Math.PI/180; });
+    var perRoute={}; roots.forEach(function(n){ (perRoute[n.route]=perRoute[n.route]||[]).push(n); });
+    Object.keys(perRoute).forEach(function(ri){ var k=perRoute[ri].length; perRoute[ri].forEach(function(n,i){ n.a=secOf[ri]+(i-(k-1)/2)*.42; }); });
+    for(var d=0;d<=maxD;d++){
+      var arr=byD[d], r=R0+STEP*d;
+      if(d>0) arr.forEach(function(n){
+        var x=1.0*Math.cos(secOf[n.route]), y=1.0*Math.sin(secOf[n.route]);
+        n.pre.forEach(function(p,k){ var w=k===0?1.4:.35; x+=w*Math.cos(p.a); y+=w*Math.sin(p.a); });
+        n.a=Math.atan2(y,x);
+      });
+      var items=arr.map(function(n){ return {n:n,a:n.a}; });
+      items.forEach(function(it){ it.a=normA(it.a); });
+      spreadRing(items,r,MINSEP);
+      items.forEach(function(it){ it.n.a=it.a; it.n.mx=Math.cos(it.a)*r; it.n.my=Math.sin(it.a)*r; });
+    }
+    /* branch label angle = circular mean of the route's meals, then spread so labels do not overlap */
+    var pills=ris.map(function(ri){
+      var x=0,y=0; ROUTES[ri].nodes.forEach(function(n){ x+=Math.cos(n.a); y+=Math.sin(n.a); });
+      return {ri:ri,a:Math.hypot(x,y)<1e-6?ROUTES[ri].nodes[0].a:Math.atan2(y,x)};
     });
-    html+='</ol></section>';
+    spreadRing(pills,PILL_R,128);
+    pills.forEach(function(pl){ var r=ROUTES[pl.ri]; r.pa=pl.a; r.ca=Math.cos(pl.a); r.sa=Math.sin(pl.a); });
+    STRAND_INFO[st.id]={ris:ris,maxR:R0+STEP*maxD,maxD:maxD};
   });
-  main.innerHTML=html;
+}
+layoutAll();
+var MV={}, VIEW=null, mapEl=null, vpEl=null, ptrs={}, gest=null, animId=0;
+function mapSize(){ return {w:main.clientWidth||390,h:main.clientHeight||600}; }
+function clampK(k){ return Math.max(.1,Math.min(2.4,k)); }
+function fitView(){
+  var z=mapSize(), mr=STRAND_INFO[curStrand()].maxR, k=clampK(Math.min(z.w,z.h)/(2*(mr+64+290)));
+  return {x:z.w/2,y:z.h/2,k:k};
+}
+function homeView(){
+  var z=mapSize(), k=Math.min(.75,Math.min(z.w,z.h)/560);
+  return {x:z.w/2,y:z.h/2,k:k};
+}
+function focusView(wx,wy,k){ var z=mapSize(); return {x:z.w/2-wx*k,y:z.h/2-wy*k,k:k}; }
+function nextUpNode(){
+  var last=allEntries().filter(function(e){ return e.cookedAt && e.nodeId && NODE[e.nodeId] && ROUTES[NODE[e.nodeId].route].strand===curStrand(); })
+    .sort(function(a,b){ return String(b.cookedAt).localeCompare(String(a.cookedAt)); })[0];
+  var ri = last ? NODE[last.nodeId].route : STRAND_INFO[curStrand()].ris[0];
+  var c=currentNode(ri);
+  if(c) return c;
+  var ris=STRAND_INFO[curStrand()].ris;
+  for(var i=0;i<ris.length;i++){ c=currentNode(ris[i]); if(c) return c; }
+  return null;
+}
+function applyView(){
+  if(!vpEl||!VIEW) return;
+  vpEl.setAttribute('transform','translate('+VIEW.x.toFixed(1)+','+VIEW.y.toFixed(1)+') scale('+VIEW.k.toFixed(3)+')');
+  mapEl.classList.toggle('far',VIEW.k<.6);
+  mapEl.classList.toggle('vfar',VIEW.k<.42);
+  var s1=Math.max(1,Math.min(1.5,.55/VIEW.k)), s2=Math.max(1,.7/VIEW.k);
+  vpEl.querySelectorAll('.mpill').forEach(function(g){ g.setAttribute('transform','translate('+g.dataset.px+','+g.dataset.py+') scale('+s1.toFixed(2)+')'); });
+  vpEl.querySelectorAll('.mend').forEach(function(g){ g.setAttribute('transform','translate('+g.dataset.px+','+g.dataset.py+') scale('+s2.toFixed(2)+')'); });
+  MV[curStrand()]=VIEW;
+}
+function animateTo(t){
+  cancelAnimationFrame(animId);
+  var f=VIEW, t0=performance.now(), D=340;
+  function step(now){
+    var u=Math.min(1,(now-t0)/D), e=1-Math.pow(1-u,3);
+    VIEW={x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,k:f.k+(t.k-f.k)*e}; applyView();
+    if(u<1) animId=requestAnimationFrame(step);
+  }
+  animId=requestAnimationFrame(step);
+}
+function zoomAbout(px,py,nk,animate){
+  var k=clampK(nk), wx=(px-VIEW.x)/VIEW.k, wy=(py-VIEW.y)/VIEW.k, t={x:px-wx*k,y:py-wy*k,k:k};
+  if(animate) animateTo(t); else { VIEW=t; applyView(); }
+}
+function focusNode(id,k){
+  var n=NODE[id]; if(!n||!mapEl) return;
+  animateTo(focusView(n.mx,n.my,Math.max(k||0,.95)));
+}
+function trunc(t,n){ return t.length>n?t.slice(0,n-1)+'…':t; }
+function routeProgress(ri){ var r=ROUTES[ri]; return r.nodes.filter(isDone).length+'/'+r.nodes.length; }
+function renderPath(){
+  var sid=curStrand(), info=STRAND_INFO[sid], st=STRANDS.filter(function(x){return x.id===sid;})[0];
+  var segs='', nodes='', pills='', ends='', rings='';
+  for(var rd=0;rd<=info.maxD;rd++) rings+='<circle class="ring" r="'+(R0+STEP*rd)+'"/>';
+  var strandNs=FLAT.filter(function(n){ return ROUTES[n.route].strand===sid; });
+  strandNs.forEach(function(n){
+    var on0=nodeStatus(n)!=='locked' || n.pre.length===0;
+    if(n.pre.length===0){
+      segs+='<g class="r'+n.route+'"><path class="mseg on" d="M'+(Math.cos(n.a)*60).toFixed(0)+' '+(Math.sin(n.a)*60).toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
+    }
+    n.pre.forEach(function(p,k){
+      segs+='<g class="r'+n.route+'"><path class="mseg'+(k>0?' x':'')+(isDone(p)?' on':'')+'" d="M'+p.mx.toFixed(0)+' '+p.my.toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
+    });
+  });
+  strandNs.forEach(function(n){
+    var ri=n.route, r=ROUTES[ri], s2=nodeStatus(n), R=n.boss?32:25;
+    var glyph = s2==='done' ? '<svg x="-12" y="-12" width="24" height="24" viewBox="0 0 24 24" style="stroke-width:3">'+ICON.check+'</svg>'
+      : s2==='locked' ? '<svg x="-11" y="-11" width="22" height="22" viewBox="0 0 24 24">'+ICON.lock+'</svg>'
+      : n.boss ? '<svg x="-12" y="-12" width="24" height="24" viewBox="0 0 24 24">'+ICON.cloche+'</svg>'
+      : '<svg x="-11" y="-11" width="22" height="22" viewBox="0 0 24 24">'+ICON.plate+'</svg>';
+    var label={done:'cooked',locked:'locked',open:'ready',learning:'in progress'}[s2];
+    nodes+='<g class="mn r'+ri+' st-'+s2+(n.boss?' boss':'')+'" data-nid="'+esc(n.id)+'" tabindex="0" role="button" aria-label="'+esc(n.title+', '+r.name+', '+label)+'" transform="translate('+n.mx.toFixed(0)+','+n.my.toFixed(0)+')">'+
+      ((s2==='open'||s2==='learning')?'<circle class="pulse" r="'+(R+4)+'"/>':'')+
+      '<circle class="mb" r="'+R+'"/>'+glyph+'<text class="ttl" y="'+(R+16)+'">'+esc(trunc(n.title,17))+'</text></g>';
+  });
+  info.ris.forEach(function(ri){
+    var r=ROUTES[ri], px=Math.round(r.ca*PILL_R), py=Math.round(r.sa*PILL_R), cnt=routeProgress(ri);
+    var pw=Math.max(96,Math.round(r.name.length*7.8+26));
+    pills+='<g class="mpill r'+ri+'" data-rid="'+ri+'" data-px="'+px+'" data-py="'+py+'" transform="translate('+px+','+py+')"><rect x="'+(-pw/2)+'" y="-21" width="'+pw+'" height="42" rx="21"/><text y="-5">'+esc(r.name)+'</text><text class="c" y="12">'+cnt+'</text></g>';
+    var er=info.maxR+90, ex=r.ca*er, ey=r.sa*er;
+    ends+='<g class="mend r'+ri+'" data-rid="'+ri+'" data-px="'+ex.toFixed(0)+'" data-py="'+ey.toFixed(0)+'" transform="translate('+ex.toFixed(0)+','+ey.toFixed(0)+')"><rect x="'+(-pw/2)+'" y="-21" width="'+pw+'" height="42" rx="21"/><text y="-5">'+esc(r.name)+'</text><text class="c" y="12">'+cnt+'</text></g>';
+  });
+  var total=strandNodes().length, done=strandNodes().filter(isDone).length;
+  var hub='<g class="hub"><circle r="36"/><text y="-6">'+(sid==='chef'?'Chef':'Home')+'</text><text class="c" y="13">'+done+'/'+total+'</text></g>';
+  var hint = (allEntries().length===0 && !(function(){ try{ return localStorage.getItem('mise.hint'); }catch(e){ return null; } })()) ?
+    '<div id="maphint" role="note"><b>Look around</b>Drag to move, pinch to zoom, tap a branch to jump in. Every branch is open, pick any.<br><button class="link" data-a="hint-ok">Got it</button></div>' : '';
+  main.innerHTML='<div id="mapwrap"><svg id="map" role="group" aria-label="'+esc(st.name)+' skill tree"><g id="vp">'+rings+segs+hub+nodes+pills+ends+'</g></svg>'+
+    '<div class="mapctl"><button class="mbtn" data-a="map-in" aria-label="Zoom in">+</button><button class="mbtn" data-a="map-out" aria-label="Zoom out">−</button><button class="mbtn fit" data-a="map-fit" aria-label="Show the whole tree">ALL</button></div>'+hint+'</div>';
+  mapEl=$('#map'); vpEl=$('#vp');
+  if(MV[sid]) VIEW=MV[sid];
+  else {
+    var nu=allEntries().some(function(e){ return !!e.cookedAt; })?nextUpNode():null;
+    VIEW = nu ? focusView(nu.mx,nu.my,.95) : homeView();
+  }
+  applyView(); bindMap();
+}
+function bindMap(){
+  var rect=function(){ return mapEl.getBoundingClientRect(); };
+  mapEl.addEventListener('pointerdown',function(ev){
+    cancelAnimationFrame(animId);
+    var hh=$('#maphint'); if(hh){ hh.remove(); try{ localStorage.setItem('mise.hint','1'); }catch(e){} }
+    var r=rect(); ptrs[ev.pointerId]={x:ev.clientX-r.left,y:ev.clientY-r.top};
+    try{ mapEl.setPointerCapture(ev.pointerId); }catch(e){}
+    var ids=Object.keys(ptrs);
+    if(ids.length===1) gest={type:'pan',sx:ptrs[ids[0]].x,sy:ptrs[ids[0]].y,x0:VIEW.x,y0:VIEW.y,moved:false,target:ev.target};
+    else if(ids.length===2) startPinch();
+  });
+  function startPinch(){
+    var ids=Object.keys(ptrs), a=ptrs[ids[0]], b=ptrs[ids[1]], mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    gest={type:'pinch',d0:Math.hypot(a.x-b.x,a.y-b.y)||1,k0:VIEW.k,wx:(mx-VIEW.x)/VIEW.k,wy:(my-VIEW.y)/VIEW.k,moved:true};
+  }
+  mapEl.addEventListener('pointermove',function(ev){
+    if(!ptrs[ev.pointerId]||!gest) return;
+    var r=rect(); ptrs[ev.pointerId]={x:ev.clientX-r.left,y:ev.clientY-r.top};
+    var ids=Object.keys(ptrs);
+    if(gest.type==='pan' && ids.length===1){
+      var p=ptrs[ids[0]], dx=p.x-gest.sx, dy=p.y-gest.sy;
+      if(Math.abs(dx)+Math.abs(dy)>8) gest.moved=true;
+      if(gest.moved){ VIEW={x:gest.x0+dx,y:gest.y0+dy,k:VIEW.k}; applyView(); }
+    } else if(gest.type==='pinch' && ids.length>=2){
+      var a=ptrs[ids[0]], b=ptrs[ids[1]], mx=(a.x+b.x)/2, my=(a.y+b.y)/2, k=clampK(gest.k0*Math.hypot(a.x-b.x,a.y-b.y)/gest.d0);
+      VIEW={x:mx-gest.wx*k,y:my-gest.wy*k,k:k}; applyView();
+    }
+  });
+  function up(ev){
+    if(!ptrs[ev.pointerId]) return;
+    delete ptrs[ev.pointerId];
+    var ids=Object.keys(ptrs), g=gest;
+    if(ids.length===0){
+      gest=null;
+      if(g && g.type==='pan' && !g.moved && ev.type==='pointerup') mapTap(g.target);
+    } else if(ids.length===1){
+      var p=ptrs[ids[0]]; gest={type:'pan',sx:p.x,sy:p.y,x0:VIEW.x,y0:VIEW.y,moved:true,target:null};
+    }
+  }
+  mapEl.addEventListener('pointerup',up); mapEl.addEventListener('pointercancel',up);
+  mapEl.addEventListener('wheel',function(ev){
+    ev.preventDefault(); var r=rect();
+    zoomAbout(ev.clientX-r.left,ev.clientY-r.top,VIEW.k*Math.exp(-ev.deltaY*.0016),false);
+  },{passive:false});
+  mapEl.addEventListener('keydown',function(ev){
+    if((ev.key==='Enter'||ev.key===' ') && ev.target.dataset && ev.target.dataset.nid){ ev.preventDefault(); openNodeCard(ev.target.dataset.nid); }
+  });
+}
+function mapTap(t){
+  var nd=t&&t.closest&&t.closest('[data-nid]'), rd=t&&t.closest&&t.closest('[data-rid]');
+  if(nd){
+    var id=nd.dataset.nid;
+    if(VIEW.k<.8){ focusNode(id,1); } else { route=NODE[id].route; openNodeCard(id); }
+    return;
+  }
+  if(rd){
+    var ri=+rd.dataset.rid, r=ROUTES[ri], c=currentNode(ri)||r.nodes[0];
+    route=ri; animateTo(focusView(c.mx,c.my,1));
+  }
+}
+function openNextUp(){
+  SHEET={type:'nextup'};
+  var ris=STRAND_INFO[curStrand()].ris;
+  openLayer('<div class="sh-top"><span class="mono">Next up</span><button class="x" data-a="close" aria-label="Close">'+icon('x')+'</button></div>'+
+    '<h2 class="ed-title">Where to next</h2><p class="note">The next meal on every branch. Pick any, they are all open.</p>'+
+    '<ul class="attempts">'+ris.map(function(ri){
+      var r=ROUTES[ri], c=currentNode(ri);
+      return '<li><button class="attempt r'+ri+'" data-a="nu-go" data-id="'+(c?esc(c.id):'')+'" data-r="'+ri+'"'+(c?'':' disabled')+'><span><b>'+esc(r.name)+'</b><br><small>'+(c?esc(c.title):(ROUTES[ri].nodes.every(isDone)?'Branch complete':'Waiting on other branches'))+'</small></span><span class="rate">'+routeProgress(ri)+'</span></button></li>';
+    }).join('')+'</ul>','sheet');
 }
 
 function ratingLabel(e){
@@ -711,7 +1142,7 @@ function ticketHtml(e,extraCls){
   var vids=(e.videos&&e.videos.length)||0;
   var photo=(typeof e.photo==='string' && e.photo.indexOf('data:image/jpeg;base64,')===0)?'<img class="thumb" data-zoom alt="Photo of the meal" src="'+e.photo+'">':'';
   return '<button class="ticket'+(node?' r'+node.route:'')+(extraCls||'')+'" data-a="open-entry" data-eid="'+esc(e.id)+'">'+
-    '<div class="tk-head"><span class="mono">'+esc(when)+'</span>'+ratingLabel(e)+'</div><div class="perf"></div>'+
+    '<div class="tk-head"><span class="mono">'+esc(when)+'</span><span>'+(e.grade?'<span class="rate">Chef '+e.grade.score+'/10</span> ':'')+ratingLabel(e)+'</span></div><div class="perf"></div>'+
     '<div class="tk-row"><div class="tk-body"><div class="tk-title">'+esc(title)+'</div><div class="tk-unit">'+esc(unit)+'</div>'+
     (e.learned?'<div class="tk-learned">'+esc(e.learned)+'</div>':'')+
     '</div>'+photo+'</div>'+
@@ -769,7 +1200,8 @@ function openNodeCard(id,keepScroll){
   SHEET={type:'node',id:id};
   var primary='';
   if(st==='locked'){
-    primary='<p class="note">Cook the meal before this one first, or skip ahead if you already know it.</p>'+
+    var miss=n.pre.filter(function(p){ return !isDone(p); }).map(function(p){ return p.title; });
+    primary='<p class="note">Cook first: <b>'+esc(miss.join(', '))+'</b>. Or skip ahead if you already know it.</p>'+
             '<button class="btn alt block" data-a="unlock" data-id="'+esc(id)+'">Unlock this meal</button>';
   } else if(st==='learning'){
     var draft=es.filter(function(e){ return !e.cookedAt; })[0];
@@ -787,8 +1219,86 @@ function openNodeCard(id,keepScroll){
     '<button class="x" data-a="close" aria-label="Close">'+icon('x')+'</button></div>'+
     '<h2 class="ed-title">'+esc(n.title)+'</h2>'+briefHtml(n)+
     '<a class="link" href="'+ytUrl(n.q)+'" target="_blank" rel="noopener noreferrer">'+icon('video')+'Find a video to learn it</a>'+
+    (n.pre.length&&st!=='locked'?'<p class="note">Builds on: '+esc(n.pre.map(function(p){return p.title;}).join(', '))+'</p>':'')+(n.next.length?'<p class="note">Leads to: '+esc(n.next.map(function(p){return p.title;}).join(', '))+'</p>':'')+
+    (RECIPES[id]?'<button class="btn alt block" style="margin:4px 0 8px" data-a="recipe-open" data-id="'+esc(id)+'">'+icon('note')+'Recipe and cooking mode</button>':'')+
     list+'<div class="actions">'+primary+'</div>','sheet r'+n.route);
   if(keepScroll){ var s=$('#sheet'); if(s) s.scrollTop=sc; }
+}
+
+function recipeList(id){ return RECIPES[id].ing.join('\n'); }
+function recipeText(id){
+  var n=NODE[id], r=RECIPES[id];
+  return n.title+' (serves '+r.serves+')\n\nIngredients\n'+r.ing.map(function(x){ return '- '+x; }).join('\n')+'\n\nMethod\n'+r.steps.map(function(st,i){ return (i+1)+'. '+st.h+': '+st.t; }).join('\n');
+}
+function shareOrCopy(text,title,okMsg){
+  if(navigator.share){ navigator.share({title:title,text:text}).catch(function(er){ if(er&&er.name==='AbortError') return; copyAny(text,okMsg); }); return; }
+  copyAny(text,okMsg);
+}
+function copyAny(text,okMsg){
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ return navigator.clipboard.writeText(text).then(function(){ toast(okMsg); }).catch(function(){ toast('Copy was blocked by this browser.'); }); } }catch(e){}
+  toast('Copy was blocked by this browser.');
+}
+function openRecipe(id){
+  var n=NODE[id], r=RECIPES[id]; if(!r) return;
+  SHEET={type:'recipe',id:id};
+  openLayer(
+    '<div class="sh-top"><span class="mono">'+esc(n.title)+' · Serves '+r.serves+'</span><button class="x" data-a="recipe-back" aria-label="Back">'+icon('x')+'</button></div>'+
+    '<h2 class="ed-title">'+esc(n.title)+'</h2>'+
+    '<div class="rbtns"><button class="btn block" data-a="cook-start" data-id="'+esc(id)+'">Start cooking mode</button>'+
+    '<button class="btn alt block" data-a="list-share" data-id="'+esc(id)+'">Copy shopping list</button>'+
+    '<button class="btn alt block" data-a="recipe-copy" data-id="'+esc(id)+'">Copy whole recipe</button></div>'+
+    '<div class="h3m">Ingredients</div><ul class="ing">'+r.ing.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'+
+    '<div class="h3m">Method</div><ol class="rsteps">'+r.steps.map(function(st){ return '<li><b>'+esc(st.h)+'</b>'+esc(st.t)+(st.cue?'<em>Looks like: '+esc(st.cue)+'</em>':'')+'</li>'; }).join('')+'</ol>',
+    'sheet r'+n.route);
+}
+
+/* Cooking mode: full screen, one step at a time, with timers and what it should look like. */
+var CK=null, ckTick=0, wakeLock=null;
+function fmtClock(sec){ var m=Math.floor(sec/60), x=sec%60; return m+':'+(x<10?'0':'')+x; }
+function ckBeep(){
+  try{
+    var A=window.AudioContext||window.webkitAudioContext, c=new A(), o=c.createOscillator(), g=c.createGain();
+    o.connect(g); g.connect(c.destination); o.frequency.value=880; g.gain.setValueAtTime(.2,c.currentTime); o.start(); o.stop(c.currentTime+.5);
+  }catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate([300,150,300]); }catch(e){}
+}
+function ckStopTimer(){ if(ckTick){ clearInterval(ckTick); ckTick=0; } if(CK) CK.end=0; }
+function ckRender(){
+  var el=$('#cook'), n=NODE[CK.id], r=RECIPES[CK.id], st=r.steps[CK.i], last=CK.i===r.steps.length-1;
+  el.className='r'+n.route; el.hidden=false;
+  var timerHtml='';
+  if(st.s){
+    timerHtml=CK.end?'<div class="ck-time" id="ck-time" aria-live="off">'+fmtClock(Math.max(0,Math.ceil((CK.end-Date.now())/1000)))+'</div><button class="btn alt block" data-a="cook-timer-stop">Stop timer</button>'
+      :'<button class="btn alt block" data-a="cook-timer">'+icon('video')+'Start '+fmtClock(st.s)+' timer</button>';
+  }
+  el.innerHTML=
+    '<div class="ck-top"><span class="mono">'+esc(n.title)+' · Step '+(CK.i+1)+' of '+r.steps.length+'</span><button class="x" data-a="cook-exit" aria-label="Exit cooking mode">'+icon('x')+'</button></div>'+
+    '<div class="ck-bar" aria-hidden="true"><i style="width:'+Math.round((CK.i+1)/r.steps.length*100)+'%"></i></div>'+
+    '<div class="ck-body">'+(CK.ing?'<h2>Ingredients</h2><ul class="ing ck-ing">'+r.ing.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>'
+      :'<h2>'+esc(st.h)+'</h2><p class="ck-t">'+esc(st.t)+'</p>'+(st.cue?'<div class="ck-cue"><b>It should look like</b>'+esc(st.cue)+'</div>':'')+timerHtml)+'</div>'+
+    '<button class="link" data-a="cook-ing" style="margin-bottom:8px">'+(CK.ing?'Back to the step':'See ingredients')+'</button>'+
+    '<div class="ck-nav"><button class="btn alt" data-a="cook-prev"'+(CK.i===0?' disabled style="opacity:.4"':'')+'>Back</button>'+
+    (last?'<button class="btn" data-a="cook-done">Done, log it</button>':'<button class="btn" data-a="cook-next">Next step</button>')+'</div>';
+}
+function ckStart(id){
+  CK={id:id,i:0,ing:false,end:0};
+  try{ if(navigator.wakeLock&&navigator.wakeLock.request) navigator.wakeLock.request('screen').then(function(w){ wakeLock=w; }).catch(function(){}); }catch(e){}
+  ckRender();
+}
+function ckExit(){
+  ckStopTimer(); CK=null; var el=$('#cook'); el.hidden=true; el.innerHTML='';
+  try{ if(wakeLock){ wakeLock.release(); wakeLock=null; } }catch(e){}
+}
+function ckGo(d){ ckStopTimer(); CK.ing=false; CK.i=Math.max(0,Math.min(RECIPES[CK.id].steps.length-1,CK.i+d)); ckRender(); }
+function ckTimerStart(){
+  var st=RECIPES[CK.id].steps[CK.i]; CK.end=Date.now()+st.s*1000; ckRender();
+  var myStep=CK.i;
+  ckTick=setInterval(function(){
+    if(!CK||CK.i!==myStep){ clearInterval(ckTick); ckTick=0; return; }
+    var left=Math.ceil((CK.end-Date.now())/1000), t=$('#ck-time');
+    if(left<=0){ clearInterval(ckTick); ckTick=0; CK.end=0; ckBeep(); ckRender(); var b=$('#cook .ck-body'); if(b) b.insertAdjacentHTML('beforeend','<div class="ck-time" role="status">Time is up</div>'); return; }
+    if(t) t.textContent=fmtClock(left);
+  },250);
 }
 
 function blankEntry(nodeId){
@@ -798,6 +1308,58 @@ function openEditor(entry,isNew){
   ED={entry:JSON.parse(JSON.stringify(entry)), isNew:isNew, dirty:false, vurl:'', vtitle:'', confirm:null, err:'', dateOpen:false};
   SHEET={type:'editor'};
   renderEditor();
+}
+function gradeBody(g){
+  var li=function(a){ return (a||[]).map(function(x){ return '<li>'+esc(String(x))+'</li>'; }).join(''); };
+  return '<div class="g-top"><div class="g-score" aria-label="Score '+g.score+' out of 10">'+g.score+'<small style="font-size:11px;font-weight:500">/10</small></div><div class="g-verdict">'+esc(g.verdict)+'</div></div>'+
+    (g.good&&g.good.length?'<h3>What is working</h3><ul>'+li(g.good)+'</ul>':'')+
+    (g.fix&&g.fix.length?'<h3>Fix next time</h3><ul>'+li(g.fix)+'</ul>':'')+
+    '<div class="g-meta">AI feedback from the photo only. It cannot taste or smell, so treat it as a second pair of eyes.</div>';
+}
+function gradeHtml(e,n,photoOk){
+  if(!SAMPLE) return '';
+  var out='';
+  if(e.grade) out+='<div class="grade" id="grade">'+gradeBody(e.grade)+'</div>';
+  if(photoOk){
+    out+='<button class="btn alt gbtn" data-a="ed-grade"'+(GRADING?' disabled':'')+'>'+(GRADING?'Looking at your plate...':(e.grade?'Grade again':'Grade my photo'))+'</button>';
+  } else if(!e.grade){
+    out+='<p class="note">Add a photo and Claude will grade it against '+(n?'the chef standard for this meal':'what a good version looks like')+'.</p>';
+  }
+  return out;
+}
+function dataUrlToBlob(u){
+  var i=u.indexOf(','), bin=atob(u.slice(i+1)), arr=new Uint8Array(bin.length);
+  for(var k=0;k<bin.length;k++) arr[k]=bin.charCodeAt(k);
+  return new Blob([arr],{type:'image/jpeg'});
+}
+function gradePhoto(){
+  if(!SAMPLE||GRADING||!ED) return;
+  var e=ED.entry, n=e.nodeId?NODE[e.nodeId]:null;
+  if(typeof e.photo!=='string') return;
+  var name=n?n.title:(e.title||'a home-cooked meal');
+  var prompt='You are a strict but kind head chef grading a trainee\'s photo of a dish they cooked.\n'+
+    'Dish: '+name+'\n'+
+    (n?'What this lesson focuses on: '+n.focus+'\nChef standard to grade against: '+n.check+'\n':'')+
+    'Judge only what is visible in the photo: colour, browning, doneness cues, texture, seasoning cues, knife work, plating and portioning. Do not invent what you cannot see. If the photo is not food, give score 0 and say so.\n'+
+    'Reply with only JSON: {"score": integer 1-10, "verdict": "one sentence", "good": ["up to 3 short points"], "fix": ["up to 3 short, specific, actionable points"]}';
+  GRADING=true; ED.err=''; renderEditor(true);
+  var myId=e.id;
+  SAMPLE.json(prompt,{images:[dataUrlToBlob(e.photo)],modelTier:'default'}).then(function(r){
+    GRADING=false;
+    if(!ED||ED.entry.id!==myId) return;
+    var sc=Math.max(0,Math.min(10,Math.round(Number(r&&r.score))));
+    if(!r||isNaN(sc)||typeof r.verdict!=='string'){ ED.err='Claude gave an odd answer. Try again.'; renderEditor(true); return; }
+    ED.entry.grade={score:sc,verdict:r.verdict.slice(0,240),good:(r.good||[]).slice(0,3).map(String),fix:(r.fix||[]).slice(0,3).map(String),at:nowIso()};
+    ED.dirty=true; renderEditor(true);
+  }).catch(function(er){
+    GRADING=false;
+    var c=er&&er.code;
+    if(c==='not_granted'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='images_unavailable'||c==='capability_removed'){ SAMPLE=null; }
+    else if(ED&&ED.entry.id===myId){
+      ED.err = c==='rate_limited' ? 'Too many gradings just now. Give it a minute.' : c==='image_rejected' ? 'Claude could not read that photo. Try another.' : 'Grading did not work. Try again in a moment.';
+    }
+    if(ED&&ED.entry.id===myId) renderEditor(true);
+  });
 }
 function renderEditor(keepScroll){
   var e=ED.entry, n=e.nodeId?NODE[e.nodeId]:null, prev=$('#sheet'), sc=prev?prev.scrollTop:0;
@@ -816,6 +1378,7 @@ function renderEditor(keepScroll){
   var photo='<div class="field"><div class="lbl">Photo <span class="hint">(optional)</span></div><div class="photo">'+
     (photoOk?'<img data-zoom alt="Photo of the meal, tap to enlarge" src="'+e.photo+'"><button class="link danger" data-a="ed-photo-clear">Remove</button>'
             :'<label class="filebtn">'+icon('camera')+'Add a photo<input type="file" id="f-photo" accept="image/*"></label>')+'</div></div>';
+  photo+=gradeHtml(e,n,photoOk);
   var learned='<div class="field"><label for="f-learned">What I learned</label><textarea id="f-learned" placeholder="One thing that clicked, or one thing that went wrong">'+esc(e.learned)+'</textarea></div>';
   var vids='<div class="field"><div class="lbl">Videos I watched</div>'+
     (e.videos.length?'<ul class="vids">'+e.videos.map(function(v,i){
@@ -942,13 +1505,7 @@ function toast(msg){
   var t=$('#toast'); t.textContent=msg; t.hidden=false;
   clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.hidden=true; },2600);
 }
-function scrollToCurrent(id){
-  var c=id?NODE[id]:currentNode(); if(!c) return;
-  var el=main.querySelector('.plate[data-id="'+c.id+'"]'); if(!el) return;
-  var y=el.getBoundingClientRect().top-main.getBoundingClientRect().top+main.scrollTop;
-  if(y<main.clientHeight*0.7){ main.scrollTop=0; return; }
-  main.scrollTop=y-main.clientHeight/2+40;
-}
+function scrollToCurrent(id){ if(id && tab==='path') focusNode(id,.95); }
 function journalText(){
   var cooked=allEntries().filter(function(e){ return !!e.cookedAt; }).sort(function(a,b){ return String(a.cookedAt).localeCompare(String(b.cookedAt)); });
   return cooked.map(function(e){
@@ -982,15 +1539,22 @@ document.addEventListener('click',function(ev){
   var a=t.dataset.a;
   if(a==='scrim'){ if(ev.target!==t) return; if(SHEET&&SHEET.type==='editor') tryCloseEditor(); else closeLayer(); return; }
   if(a==='cel-close'){ if(t.classList.contains('scrim') && ev.target!==t) return; var nx=SHEET&&SHEET.next; closeLayer(); if(nx) scrollToCurrent(nx); return; }
-  if(a==='tab'){ tab=t.dataset.t; render(); main.scrollTop=0; if(tab==='path') scrollToCurrent(); return; }
-  if(a==='route'){ route=+t.dataset.r; try{ localStorage.setItem('mise.route',String(route)); }catch(e){} render(); main.scrollTop=0; scrollToCurrent(); return; }
+  if(a==='tab'){ tab=t.dataset.t; render(); if(tab==='journal') main.scrollTop=0; return; }
+  if(a==='strand'){ if(S.strand!==t.dataset.s){ S.strand=t.dataset.s; ensureRoute(); saveLocal(); cloudSetSkips(); VIEW=null; render(); } return; }
+  if(a==='nextup'){ openNextUp(); return; }
+  if(a==='nu-go'){ var gid=t.dataset.id; if(!gid) return; route=+t.dataset.r; closeLayer(); focusNode(gid,1); setTimeout(function(){ openNodeCard(gid); },380); return; }
+  if(a==='map-in'){ var z=mapSize(); zoomAbout(z.w/2,z.h/2,VIEW.k*1.6,true); return; }
+  if(a==='map-out'){ var z2=mapSize(); zoomAbout(z2.w/2,z2.h/2,VIEW.k/1.6,true); return; }
+  if(a==='map-fit'){ animateTo(fitView()); return; }
+  if(a==='hint-ok'){ try{ localStorage.setItem('mise.hint','1'); }catch(e){} var h=$('#maphint'); if(h) h.remove(); return; }
+  if(a==='route'){ route=+t.dataset.r; try{ localStorage.setItem('mise.route',String(route)); }catch(e){} render(); return; }
   if(a==='switch-strand'){ openOnboarding(1); return; }
   if(a==='pick-strand'){ ONB.strand=t.dataset.s; openOnboarding(2); return; }
   if(a==='onb-back'){ openOnboarding(1); return; }
   if(a==='onb-cancel'){ closeLayer(); return; }
   if(a==='pick-route'){
     S.strand=ONB.strand; route=+t.dataset.r; try{ localStorage.setItem('mise.route',String(route)); }catch(e){}
-    saveLocal(); cloudSetSkips(); closeLayer(); tab='path'; render(); main.scrollTop=0; scrollToCurrent(); return;
+    saveLocal(); cloudSetSkips(); closeLayer(); tab='path'; VIEW=null; MV[S.strand]=null; render(); var cn=currentNode(route); if(cn) setTimeout(function(){ focusNode(cn.id,.95); },250); return;
   }
   if(a==='node'){ openNodeCard(t.dataset.id); return; }
   if(a==='close'){ closeLayer(); return; }
@@ -999,13 +1563,26 @@ document.addEventListener('click',function(ev){
   if(a==='free'){ openEditor(blankEntry(null),true); return; }
   if(a==='open-entry'){ var e=S.entries[t.dataset.eid]; if(e) openEditor(e,false); return; }
   if(a==='copy-text'){ var txt=journalText(); if(!txt) toast('Nothing to copy yet.'); else copyText(txt); return; }
+  if(a==='recipe-open'){ openRecipe(t.dataset.id); return; }
+  if(a==='recipe-back'){ var rid=SHEET&&SHEET.id; if(rid) openNodeCard(rid); else closeLayer(); return; }
+  if(a==='recipe-copy'){ var id3=t.dataset.id; shareOrCopy(recipeText(id3),NODE[id3].title,'Recipe copied.'); return; }
+  if(a==='list-share'){ var id4=t.dataset.id; shareOrCopy(recipeList(id4),'Shopping list: '+NODE[id4].title,'Shopping list copied. Paste it into Reminders or Notes.'); return; }
+  if(a==='cook-start'){ ckStart(t.dataset.id); return; }
+  if(a==='cook-exit'){ ckExit(); return; }
+  if(a==='cook-next'){ ckGo(1); return; }
+  if(a==='cook-prev'){ ckGo(-1); return; }
+  if(a==='cook-ing'){ CK.ing=!CK.ing; ckRender(); return; }
+  if(a==='cook-timer'){ ckTimerStart(); return; }
+  if(a==='cook-timer-stop'){ ckStopTimer(); ckRender(); return; }
+  if(a==='cook-done'){ var cid=CK.id; ckExit(); closeLayer(); openEditor(blankEntry(cid),true); return; }
   if(!ED) return;
   if(a==='ed-close'){ tryCloseEditor(); return; }
   if(a==='ed-keep'){ ED.confirm=null; renderEditor(true); return; }
   if(a==='ed-discard'){ closeLayer(); return; }
   if(a==='ed-rate'){ var v=+t.dataset.v; ED.entry.rating = ED.entry.rating===v?0:v; ED.dirty=true; renderEditor(true); return; }
   if(a==='ed-date'){ ED.dateOpen=!ED.dateOpen; renderEditor(true); return; }
-  if(a==='ed-photo-clear'){ ED.entry.photo=null; ED.dirty=true; renderEditor(true); return; }
+  if(a==='ed-grade'){ gradePhoto(); return; }
+  if(a==='ed-photo-clear'){ ED.entry.grade=null; ED.entry.photo=null; ED.dirty=true; renderEditor(true); return; }
   if(a==='ed-addv'){
     var u=cleanUrl(ED.vurl);
     if(!u){ ED.err = ED.vurl.trim() ? 'That does not look like a web link.' : ''; renderEditor(true); return; }
@@ -1030,6 +1607,7 @@ document.addEventListener('input',function(ev){
 });
 document.addEventListener('keydown',function(ev){
   if(ev.key==='Escape' && !lb.hidden){ unzoom(); return; }
+  if(ev.key==='Escape' && CK){ ckExit(); return; }
   if(ev.key==='Escape' && layer.firstChild && !(SHEET&&SHEET.type==='onboard' && !S.strand)){ if(SHEET&&SHEET.type==='editor') tryCloseEditor(); else closeLayer(); return; }
   if(ev.key==='Enter' && ED && (ev.target.id==='f-vurl' || ev.target.id==='f-vtitle')){
     ev.preventDefault(); var b=$('[data-a="ed-addv"]'); if(b) b.click();
@@ -1042,7 +1620,7 @@ document.addEventListener('change',function(ev){
     if(!isNaN(d.getTime())){ ED.entry.cookedAt=d.toISOString(); ED.dirty=true; ED.dateOpen=false; renderEditor(true); }
   } else if(id==='f-photo'){
     var f=ev.target.files && ev.target.files[0]; if(!f) return;
-    shrink(f).then(function(url){ if(!ED) return; ED.entry.photo=url; ED.dirty=true; renderEditor(true); })
+    shrink(f).then(function(url){ if(!ED) return; ED.entry.photo=url; ED.entry.grade=null; ED.dirty=true; renderEditor(true); })
       .catch(function(){ if(!ED) return; ED.err='Could not read that photo. Try another one.'; renderEditor(true); });
   }
 });
@@ -1056,9 +1634,10 @@ loadLocal();
 if(!S.strand && allEntries().length) S.strand='home';
 ensureRoute();
 render();
-scrollToCurrent();
 if(!S.strand) openOnboarding(1);
 initCloud();
+var GRADING_ON=false; /* parked: AI photo grading, flip to true once approved */
+(function(){ try{ if(GRADING_ON&&window.claude&&claude.use){ claude.use('sample').then(function(sm){ if(!sm||!sm.json) return; return Promise.resolve(sm.limits&&sm.limits()).then(function(l){ if(l&&l.images){ SAMPLE=sm; if(ED) renderEditor(true); } }); }).catch(function(){}); } }catch(e){} })();
 window.__mise = {S:function(){return S;}, FLAT:FLAT};
 if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
