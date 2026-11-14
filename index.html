@@ -268,7 +268,25 @@ input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
 .mseg{fill:none;stroke:var(--lock-d);stroke-width:7;stroke-linecap:round}
 .mseg.on{stroke:var(--u-d)}
 .mseg.x{stroke-width:3;opacity:.55}
-.ring{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:4 10}
+#map .hit{fill:transparent;stroke:none;pointer-events:all}
+.mseg.x{display:none}
+.bdg circle{fill:#fff;stroke:var(--u-d);stroke-width:2.5}
+.bdg text{font:700 11px var(--mono);fill:var(--u-ink)}
+.mn .flash{display:none;fill:none;stroke:#ff8a1f;stroke-width:6}
+#map.hl .mn{opacity:.28}
+#map.hl .mpill,#map.hl .mend,#map.hl .hub{opacity:.35}
+#map.hl .mseg{opacity:.12}
+#map.hl .mn.need,#map.hl .mn.tgt{opacity:1}
+#map.hl .mn.need .flash{display:inline}
+#map.hl .mn.tgt .mb{stroke:#ff8a1f;stroke-width:6}
+#map.hl .mseg.x.need{display:inline;opacity:1;stroke:#ff8a1f;stroke-width:6;stroke-dasharray:2 11}
+#map.hl .mseg.need{opacity:1;stroke:#ff8a1f}
+@media (prefers-reduced-motion:no-preference){#map.hl .mn.need .flash{animation:fl .6s ease-in-out infinite alternate}}
+@keyframes fl{from{opacity:1;stroke-width:3}to{opacity:.35;stroke-width:9}}
+#needbar{position:absolute;left:12px;right:12px;top:10px;z-index:4;background:#fff;border:2px solid #ff8a1f;border-radius:18px;padding:10px 14px;font-size:14px;box-shadow:0 4px 0 #ffd2a8}
+#needbar b{font-family:var(--display)}
+#needbar .nb{display:flex;gap:14px;margin-top:4px}
+#needbar[hidden]{display:none}
 .mpill,.mend{cursor:pointer}
 .mpill rect,.mend rect{fill:var(--u);stroke:var(--u-d);stroke-width:3}
 .mpill text,.mend text{fill:var(--u-ink);stroke:none;text-anchor:middle;dominant-baseline:central;font:700 14px var(--display)}
@@ -542,8 +560,8 @@ var TREE_LINKS = [
   'roast-veg <- chopped-salad',
   'stir-fry <- chopped-salad',
   'mushrooms <- chopped-salad, fried-egg',
-  'breakfast <- fried-egg, mushrooms, snags',
-  'tray-bake <- roast-veg, chicken-thighs',
+  'breakfast <- fried-egg, mushrooms',
+  'tray-bake <- roast-veg',
   '# Baker',
   'pancakes <-',
   'banana-bread <- pancakes',
@@ -552,47 +570,47 @@ var TREE_LINKS = [
   'scones <- shortbread',
   'one-bowl-cake <- banana-bread',
   'no-knead <- flatbread',
-  'pizza <- flatbread, tomato-pasta',
-  'tart <- shortbread, custard',
-  'layer-cake <- one-bowl-cake, custard',
+  'pizza <- flatbread',
+  'tart <- shortbread',
+  'layer-cake <- one-bowl-cake',
   '# Noodles and grains',
   'rice <-',
   'aglio <- rice',
-  'tomato-pasta <- aglio, chopped-salad',
-  'fried-rice <- rice, stir-fry, scrambled',
-  'risotto <- rice, chicken-soup',
-  'noodle-stir-fry <- aglio, stir-fry',
-  'noodle-soup <- noodle-stir-fry, chicken-soup',
-  'dumplings <- flatbread, mushrooms',
-  'fresh-pasta <- tomato-pasta, flatbread',
+  'tomato-pasta <- aglio',
+  'fried-rice <- rice, scrambled',
+  'risotto <- rice',
+  'noodle-stir-fry <- aglio',
+  'noodle-soup <- noodle-stir-fry',
+  'dumplings <- noodle-stir-fry',
+  'fresh-pasta <- tomato-pasta',
   'laksa <- noodle-soup, curry',
   '# Pan and pot',
   'chicken-thighs <-',
   'steak <- chicken-thighs',
   'fish <- chicken-thighs',
   'smash-burger <- steak',
-  'pan-sauce <- steak, mushrooms',
-  'chicken-soup <- chicken-thighs, chopped-salad',
-  'pumpkin-soup <- chicken-soup, roast-veg',
+  'pan-sauce <- steak',
+  'chicken-soup <- chicken-thighs',
+  'pumpkin-soup <- chicken-soup',
   'curry <- chicken-thighs, rice',
   'stew <- steak, chicken-soup',
-  'mac-cheese <- pan-sauce, aglio',
+  'mac-cheese <- pan-sauce',
   '# Oven and grill',
   'snags <-',
-  'roast-chicken <- chicken-thighs, roast-veg',
-  'baked-fish <- fish, roast-veg',
-  'frittata <- omelette, roast-veg',
-  'lasagne <- tomato-pasta, mac-cheese',
-  'sunday-roast <- roast-chicken, roast-veg, pan-sauce',
-  'charred-corn <- snags, chopped-salad',
-  'skewers <- snags, steak',
-  'whole-fish <- baked-fish, snags',
+  'roast-chicken <- snags',
+  'baked-fish <- fish',
+  'frittata <- omelette',
+  'lasagne <- tomato-pasta',
+  'sunday-roast <- roast-chicken',
+  'charred-corn <- snags',
+  'skewers <- snags',
+  'whole-fish <- baked-fish',
   'bbq-feast <- skewers, charred-corn, whole-fish',
   '# Host',
   'custard <- scrambled',
   'menu <- tray-bake, mac-cheese',
-  'starter <- dumplings, fish',
-  'wildcard <- curry, dumplings',
+  'starter <- dumplings',
+  'wildcard <- curry',
   'host <- menu, starter, custard, sunday-roast'
 ].join('\n');
 (function buildGraph(){
@@ -926,6 +944,105 @@ function spreadRing(items,r,minChord){
     if(!moved) break;
   }
 }
+/* Layout tuning. 'init:tree' starts from a crossing-free radial tree, 'force' then relaxes it with springs. */
+var LAYOUT={mode:'force',init:'tree',iters:400,crossLen:1.6,kCross:.012,rootPin:.08,sector:0,jitter:0,starts:1,
+  spring:135,kPrim:.04,repel:26000,minD:120,rstep:120,outward:0,kAvoid:2.2,clear:56,wedgePow:.8,step:125};
+/* Spring layout. Starts from the ring layout, then:
+   springs pull connected meals together, meals push each other apart, a soft pull keeps early meals near the hub
+   and keeps each branch roughly in its own sector. Fully deterministic, so the tree looks the same every load. */
+function segCross(ax,ay,bx,by,cx,cy,dx,dy){
+  var d1=(dy-cy)*(bx-ax)-(dx-cx)*(by-ay); if(Math.abs(d1)<1e-9) return false;
+  var u=((dx-cx)*(ay-cy)-(dy-cy)*(ax-cx))/d1, v=((bx-ax)*(ay-cy)-(by-ay)*(ax-cx))/d1;
+  return u>.02&&u<.98&&v>.02&&v<.98;
+}
+/* Crossing-free starting point: lay the main branch lines (first prerequisite of each meal) out as a radial tree.
+   Every subtree gets its own wedge of the circle, so branch lines cannot cross. */
+function treeInit(ns,opts){
+  var kids={}; ns.forEach(function(n){ kids[n.id]=[]; });
+  var roots=[]; ns.forEach(function(n){ if(n.pre.length===0) roots.push(n); else kids[n.pre[0].id].push(n); });
+  var leaves={}, td={};
+  function L(n){ if(leaves[n.id]) return leaves[n.id]; var t=0; kids[n.id].forEach(function(c){ t+=L(c); }); return leaves[n.id]=Math.max(1,t); }
+  function W(n){ return Math.pow(L(n),opts.wedgePow); }
+  function place(n,a0,a1,d){
+    td[n.id]=d; var a=(a0+a1)/2, r=R0+opts.step*d;
+    n.mx=Math.cos(a)*r; n.my=Math.sin(a)*r; n.a=a;
+    var cs=kids[n.id].slice().sort(function(x,y){ return normA(x.a)-normA(y.a); });
+    var tot=0; cs.forEach(function(c){ tot+=W(c); });
+    var cur=a0; cs.forEach(function(c){ var w=(a1-a0)*W(c)/tot; place(c,cur,cur+w,d+1); cur+=w; });
+  }
+  var totR=0; roots.forEach(function(n){ totR+=W(n); });
+  var cur=-Math.PI/2; roots.forEach(function(n){ var w=2*Math.PI*W(n)/totR; place(n,cur,cur+w,0); cur+=w; });
+}
+function forceSolve(ns,secOf,p){
+  var N=ns.length, ix={}, edges=[];
+  ns.forEach(function(n,i){ ix[n.id]=i; });
+  ns.forEach(function(n){ n.pre.forEach(function(q,k){ edges.push([ix[q.id],ix[n.id],k===0]); }); });
+  var X0=ns.map(function(n){ return n.mx; }), Y0=ns.map(function(n){ return n.my; });
+  function cost(X,Y){
+    var c=0,len=0,i,j;
+    for(i=0;i<edges.length;i++){ var e=edges[i]; len+=Math.hypot(X[e[0]]-X[e[1]],Y[e[0]]-Y[e[1]])*(e[2]?1:.3); }
+    for(i=0;i<edges.length;i++) for(j=i+1;j<edges.length;j++){
+      var A=edges[i], B=edges[j];
+      if(A[0]===B[0]||A[1]===B[1]||A[0]===B[1]||A[1]===B[0]) continue;
+      if(segCross(X[A[0]],Y[A[0]],X[A[1]],Y[A[1]],X[B[0]],Y[B[0]],X[B[1]],Y[B[1]])) c+=(A[2]&&B[2])?1000:(A[2]||B[2])?160:40;
+    }
+    return c+len/edges.length;
+  }
+  function run(seed){
+    var X=X0.slice(), Y=Y0.slice(), FX=[], FY=[], rnd=seed*9301+49297;
+    function rand(){ rnd=(rnd*9301+49297)%233280; return rnd/233280-.5; }
+    if(seed>0) for(var q=0;q<X.length;q++){ X[q]+=rand()*p.jitter; Y[q]+=rand()*p.jitter; }
+    for(var it=0;it<p.iters;it++){
+      var al=1-it/p.iters, i, j, e;
+      for(i=0;i<N;i++){ FX[i]=0; FY[i]=0; }
+      for(e=0;e<edges.length;e++){
+        var E=edges[e], a=E[0], b=E[1], dx=X[b]-X[a], dy=Y[b]-Y[a], L=Math.hypot(dx,dy)||1, rest=p.spring*(E[2]?1:p.crossLen), k=E[2]?p.kPrim:p.kCross, f=k*(L-rest);
+        FX[a]+=f*dx/L; FY[a]+=f*dy/L; FX[b]-=f*dx/L; FY[b]-=f*dy/L;
+      }
+      for(i=0;i<N;i++) for(j=i+1;j<N;j++){
+        var ddx=X[i]-X[j]+(i-j)*.013, ddy=Y[i]-Y[j]+(j-i)*.007, d2=ddx*ddx+ddy*ddy, d=Math.sqrt(d2)||1;
+        if(d<380){ var f2=Math.min(50,p.repel/d2); FX[i]+=f2*ddx/d; FY[i]+=f2*ddy/d; FX[j]-=f2*ddx/d; FY[j]-=f2*ddy/d; }
+        if(d<p.minD){ var q2=(p.minD-d)*.5; FX[i]+=q2*ddx/d; FY[i]+=q2*ddy/d; FX[j]-=q2*ddx/d; FY[j]-=q2*ddy/d; }
+      }
+      /* discourage crossings: when two branch lines cross, push each line away from the other's midpoint */
+      if(p.kAvoid>0 && it>p.iters*.15){
+        for(var m=0;m<edges.length;m++) for(var o=m+1;o<edges.length;o++){
+          var A=edges[m], B=edges[o];
+          if(A[0]===B[0]||A[1]===B[1]||A[0]===B[1]||A[1]===B[0]) continue;
+          if(!(A[2]||B[2])) continue;
+          if(!segCross(X[A[0]],Y[A[0]],X[A[1]],Y[A[1]],X[B[0]],Y[B[0]],X[B[1]],Y[B[1]])) continue;
+          var amx=(X[A[0]]+X[A[1]])/2, amy=(Y[A[0]]+Y[A[1]])/2, bmx=(X[B[0]]+X[B[1]])/2, bmy=(Y[B[0]]+Y[B[1]])/2;
+          var vx=amx-bmx, vy=amy-bmy, vl=Math.hypot(vx,vy)||1; vx/=vl; vy/=vl;
+          var w=p.kAvoid*((A[2]&&B[2])?1:.5);
+          FX[A[0]]+=vx*w; FY[A[0]]+=vy*w; FX[A[1]]+=vx*w; FY[A[1]]+=vy*w;
+          FX[B[0]]-=vx*w; FY[B[0]]-=vy*w; FX[B[1]]-=vx*w; FY[B[1]]-=vy*w;
+        }
+      }
+      /* keep meals off lines they are not part of */
+      for(i=0;i<N;i++) for(e=0;e<edges.length;e++){
+        var Q=edges[e]; if(Q[0]===i||Q[1]===i||!Q[2]) continue;
+        var px=X[Q[0]], py=Y[Q[0]], sx=X[Q[1]]-px, sy=Y[Q[1]]-py, sl=sx*sx+sy*sy||1, t=((X[i]-px)*sx+(Y[i]-py)*sy)/sl;
+        if(t<.05||t>.95) continue;
+        var cx=px+t*sx, cy=py+t*sy, ox=X[i]-cx, oy=Y[i]-cy, od=Math.hypot(ox,oy)||1;
+        if(od<p.clear){ var g=(p.clear-od)*.35; FX[i]+=g*ox/od; FY[i]+=g*oy/od; FX[Q[0]]-=g*ox/od*.5; FY[Q[0]]-=g*oy/od*.5; FX[Q[1]]-=g*ox/od*.5; FY[Q[1]]-=g*oy/od*.5; }
+      }
+      for(i=0;i<N;i++){
+        var n=ns[i], r=Math.hypot(X[i],Y[i])||1, target=R0+p.rstep*n.depth, kk=n.depth===0?p.rootPin:p.outward;
+        FX[i]+=kk*(target-r)*X[i]/r; FY[i]+=kk*(target-r)*Y[i]/r;
+        var sa=secOf[n.route]; FX[i]+=p.sector*(Math.cos(sa)*r-X[i]); FY[i]+=p.sector*(Math.sin(sa)*r-Y[i]);
+      }
+      for(i=0;i<N;i++){
+        var mx=Math.max(-24,Math.min(24,FX[i]*.55*al+FX[i]*.05)), my=Math.max(-24,Math.min(24,FY[i]*.55*al+FY[i]*.05));
+        X[i]+=mx; Y[i]+=my;
+        var r2=Math.hypot(X[i],Y[i])||1, lo=R0*.85; if(r2<lo){ X[i]*=lo/r2; Y[i]*=lo/r2; }
+      }
+    }
+    return {X:X,Y:Y,c:cost(X,Y)};
+  }
+  var best=null;
+  for(var sd=0;sd<(p.starts||1);sd++){ var res=run(sd); if(!best||res.c<best.c) best=res; }
+  ns.forEach(function(n,i){ n.mx=best.X[i]; n.my=best.Y[i]; n.a=Math.atan2(best.Y[i],best.X[i]); });
+}
 function layoutAll(){
   STRANDS.forEach(function(st){
     var ris=[]; ROUTES.forEach(function(r,i){ if(r.strand===st.id) ris.push(i); });
@@ -942,7 +1059,7 @@ function layoutAll(){
       var arr=byD[d], r=R0+STEP*d;
       if(d>0) arr.forEach(function(n){
         var x=1.0*Math.cos(secOf[n.route]), y=1.0*Math.sin(secOf[n.route]);
-        n.pre.forEach(function(p,k){ var w=k===0?1.4:.35; x+=w*Math.cos(p.a); y+=w*Math.sin(p.a); });
+        n.pre.forEach(function(p,k){ var w=k===0?1.4:.15; x+=w*Math.cos(p.a); y+=w*Math.sin(p.a); });
         n.a=Math.atan2(y,x);
       });
       var items=arr.map(function(n){ return {n:n,a:n.a}; });
@@ -950,6 +1067,8 @@ function layoutAll(){
       spreadRing(items,r,MINSEP);
       items.forEach(function(it){ it.n.a=it.a; it.n.mx=Math.cos(it.a)*r; it.n.my=Math.sin(it.a)*r; });
     }
+    if(LAYOUT.init==='tree') treeInit(ns,LAYOUT);
+    if(LAYOUT.mode==='force') forceSolve(ns,secOf,LAYOUT);
     /* branch label angle = circular mean of the route's meals, then spread so labels do not overlap */
     var pills=ris.map(function(ri){
       var x=0,y=0; ROUTES[ri].nodes.forEach(function(n){ x+=Math.cos(n.a); y+=Math.sin(n.a); });
@@ -957,7 +1076,8 @@ function layoutAll(){
     });
     spreadRing(pills,PILL_R,128);
     pills.forEach(function(pl){ var r=ROUTES[pl.ri]; r.pa=pl.a; r.ca=Math.cos(pl.a); r.sa=Math.sin(pl.a); });
-    STRAND_INFO[st.id]={ris:ris,maxR:R0+STEP*maxD,maxD:maxD};
+    var mr=0; ns.forEach(function(n){ mr=Math.max(mr,Math.hypot(n.mx,n.my)); });
+    STRAND_INFO[st.id]={ris:ris,maxR:mr,maxD:maxD};
   });
 }
 layoutAll();
@@ -990,6 +1110,7 @@ function applyView(){
   mapEl.classList.toggle('vfar',VIEW.k<.42);
   var s1=Math.max(1,Math.min(1.5,.55/VIEW.k)), s2=Math.max(1,.7/VIEW.k);
   vpEl.querySelectorAll('.mpill').forEach(function(g){ g.setAttribute('transform','translate('+g.dataset.px+','+g.dataset.py+') scale('+s1.toFixed(2)+')'); });
+  vpEl.querySelectorAll('.hit').forEach(function(h){ h.setAttribute('r',Math.max(+h.dataset.r+8,24/VIEW.k).toFixed(1)); });
   vpEl.querySelectorAll('.mend').forEach(function(g){ g.setAttribute('transform','translate('+g.dataset.px+','+g.dataset.py+') scale('+s2.toFixed(2)+')'); });
   MV[curStrand()]=VIEW;
 }
@@ -1014,9 +1135,9 @@ function focusNode(id,k){
 function trunc(t,n){ return t.length>n?t.slice(0,n-1)+'…':t; }
 function routeProgress(ri){ var r=ROUTES[ri]; return r.nodes.filter(isDone).length+'/'+r.nodes.length; }
 function renderPath(){
+  clearNeeds();
   var sid=curStrand(), info=STRAND_INFO[sid], st=STRANDS.filter(function(x){return x.id===sid;})[0];
   var segs='', nodes='', pills='', ends='', rings='';
-  for(var rd=0;rd<=info.maxD;rd++) rings+='<circle class="ring" r="'+(R0+STEP*rd)+'"/>';
   var strandNs=FLAT.filter(function(n){ return ROUTES[n.route].strand===sid; });
   strandNs.forEach(function(n){
     var on0=nodeStatus(n)!=='locked' || n.pre.length===0;
@@ -1024,7 +1145,7 @@ function renderPath(){
       segs+='<g class="r'+n.route+'"><path class="mseg on" d="M'+(Math.cos(n.a)*60).toFixed(0)+' '+(Math.sin(n.a)*60).toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
     }
     n.pre.forEach(function(p,k){
-      segs+='<g class="r'+n.route+'"><path class="mseg'+(k>0?' x':'')+(isDone(p)?' on':'')+'" d="M'+p.mx.toFixed(0)+' '+p.my.toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
+      segs+='<g class="r'+n.route+'"><path data-f="'+esc(p.id)+'" data-t="'+esc(n.id)+'" class="mseg'+(k>0?' x':'')+(isDone(p)?' on':'')+'" d="M'+p.mx.toFixed(0)+' '+p.my.toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
     });
   });
   strandNs.forEach(function(n){
@@ -1035,8 +1156,11 @@ function renderPath(){
       : '<svg x="-11" y="-11" width="22" height="22" viewBox="0 0 24 24">'+ICON.plate+'</svg>';
     var label={done:'cooked',locked:'locked',open:'ready',learning:'in progress'}[s2];
     nodes+='<g class="mn r'+ri+' st-'+s2+(n.boss?' boss':'')+'" data-nid="'+esc(n.id)+'" tabindex="0" role="button" aria-label="'+esc(n.title+', '+r.name+', '+label)+'" transform="translate('+n.mx.toFixed(0)+','+n.my.toFixed(0)+')">'+
+      '<circle class="hit" data-r="'+R+'" r="'+(R+10)+'"/>'+
       ((s2==='open'||s2==='learning')?'<circle class="pulse" r="'+(R+4)+'"/>':'')+
-      '<circle class="mb" r="'+R+'"/>'+glyph+'<text class="ttl" y="'+(R+16)+'">'+esc(trunc(n.title,17))+'</text></g>';
+      '<circle class="flash" r="'+(R+7)+'"/>'+
+      '<circle class="mb" r="'+R+'"/>'+glyph+
+      ((n.pre.length>1&&s2!=='done')?'<g class="bdg" transform="translate('+(R-3)+','+(-R+3)+')"><circle r="9"/><text y="1">'+n.pre.length+'</text></g>':'')+'<text class="ttl" y="'+(R+16)+'">'+esc(trunc(n.title,17))+'</text></g>';
   });
   info.ris.forEach(function(ri){
     var r=ROUTES[ri], px=Math.round(r.ca*PILL_R), py=Math.round(r.sa*PILL_R), cnt=routeProgress(ri);
@@ -1049,8 +1173,8 @@ function renderPath(){
   var hub='<g class="hub"><circle r="36"/><text y="-6">'+(sid==='chef'?'Chef':'Home')+'</text><text class="c" y="13">'+done+'/'+total+'</text></g>';
   var hint = (allEntries().length===0 && !(function(){ try{ return localStorage.getItem('mise.hint'); }catch(e){ return null; } })()) ?
     '<div id="maphint" role="note"><b>Look around</b>Drag to move, pinch to zoom, tap a branch to jump in. Every branch is open, pick any.<br><button class="link" data-a="hint-ok">Got it</button></div>' : '';
-  main.innerHTML='<div id="mapwrap"><svg id="map" role="group" aria-label="'+esc(st.name)+' skill tree"><g id="vp">'+rings+segs+hub+nodes+pills+ends+'</g></svg>'+
-    '<div class="mapctl"><button class="mbtn" data-a="map-in" aria-label="Zoom in">+</button><button class="mbtn" data-a="map-out" aria-label="Zoom out">−</button><button class="mbtn fit" data-a="map-fit" aria-label="Show the whole tree">ALL</button></div>'+hint+'</div>';
+  main.innerHTML='<div id="mapwrap"><svg id="map" role="group" aria-label="'+esc(st.name)+' skill tree"><g id="vp">'+segs+hub+nodes+pills+ends+'</g></svg>'+
+    '<div id="needbar" hidden role="status"></div><div class="mapctl"><button class="mbtn" data-a="map-in" aria-label="Zoom in">+</button><button class="mbtn" data-a="map-out" aria-label="Zoom out">−</button><button class="mbtn fit" data-a="map-fit" aria-label="Show the whole tree">ALL</button></div>'+hint+'</div>';
   mapEl=$('#map'); vpEl=$('#vp');
   if(MV[sid]) VIEW=MV[sid];
   else {
@@ -1080,7 +1204,7 @@ function bindMap(){
     var ids=Object.keys(ptrs);
     if(gest.type==='pan' && ids.length===1){
       var p=ptrs[ids[0]], dx=p.x-gest.sx, dy=p.y-gest.sy;
-      if(Math.abs(dx)+Math.abs(dy)>8) gest.moved=true;
+      if(Math.hypot(dx,dy)>12) gest.moved=true;
       if(gest.moved){ VIEW={x:gest.x0+dx,y:gest.y0+dy,k:VIEW.k}; applyView(); }
     } else if(gest.type==='pinch' && ids.length>=2){
       var a=ptrs[ids[0]], b=ptrs[ids[1]], mx=(a.x+b.x)/2, my=(a.y+b.y)/2, k=clampK(gest.k0*Math.hypot(a.x-b.x,a.y-b.y)/gest.d0);
@@ -1107,13 +1231,51 @@ function bindMap(){
     if((ev.key==='Enter'||ev.key===' ') && ev.target.dataset && ev.target.dataset.nid){ ev.preventDefault(); openNodeCard(ev.target.dataset.nid); }
   });
 }
+var needTimer=0;
+function clearNeeds(){
+  if(needTimer){ clearTimeout(needTimer); needTimer=0; }
+  if(!mapEl) return;
+  mapEl.classList.remove('hl');
+  mapEl.querySelectorAll('.need,.tgt').forEach(function(e){ e.classList.remove('need'); e.classList.remove('tgt'); });
+  var nb=$('#needbar'); if(nb) nb.hidden=true;
+}
+function showNeeds(n){
+  clearNeeds();
+  var S={}, order=[];
+  (function walk(x){ x.pre.forEach(function(p){ if(!isDone(p) && !S[p.id]){ S[p.id]=p; order.push(p); walk(p); } }); })(n);
+  mapEl.classList.add('hl');
+  var tg=mapEl.querySelector('.mn[data-nid="'+n.id+'"]'); if(tg) tg.classList.add('tgt');
+  order.forEach(function(p){ var el=mapEl.querySelector('.mn[data-nid="'+p.id+'"]'); if(el) el.classList.add('need'); });
+  mapEl.querySelectorAll('.mseg').forEach(function(e){
+    var f=NODE[e.dataset.f], t=NODE[e.dataset.t]; if(!f||!t) return;
+    if((S[t.id]||t===n) && (S[f.id]||isDone(f))) e.classList.add('need');
+  });
+  var first=order.filter(function(p){ return p.pre.every(isDone); });
+  var names=(first.length?first:order).map(function(p){ return p.title; });
+  var nb=$('#needbar');
+  nb.innerHTML='<b>Locked.</b> Cook '+(order.length>1?'these first ('+order.length+' meals): ':'this first: ')+esc(names.slice(0,3).join(', '))+(names.length>3?' and more':'')+
+    '<div class="nb"><button class="link" data-a="unlock" data-id="'+esc(n.id)+'">Unlock anyway</button><button class="link" data-a="need-open" data-id="'+esc(n.id)+'">Details</button></div>';
+  nb.hidden=false;
+  /* bring everything into view if needed */
+  var z=mapSize(), xs=[n.mx], ys=[n.my]; order.forEach(function(p){ xs.push(p.mx); ys.push(p.my); });
+  var x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs), y0=Math.min.apply(null,ys), y1=Math.max.apply(null,ys);
+  var sx0=VIEW.x+x0*VIEW.k, sx1=VIEW.x+x1*VIEW.k, sy0=VIEW.y+y0*VIEW.k, sy1=VIEW.y+y1*VIEW.k;
+  if(sx0<30||sy0<90||sx1>z.w-30||sy1>z.h-30){
+    var k=clampK(Math.max(.32,Math.min(1,Math.min(z.w/(x1-x0+200),(z.h-120)/(y1-y0+200)))));
+    animateTo({x:z.w/2-((x0+x1)/2)*k,y:z.h/2+30-((y0+y1)/2)*k,k:k});
+  }
+  needTimer=setTimeout(clearNeeds,5000);
+}
 function mapTap(t){
   var nd=t&&t.closest&&t.closest('[data-nid]'), rd=t&&t.closest&&t.closest('[data-rid]');
   if(nd){
-    var id=nd.dataset.nid;
-    if(VIEW.k<.8){ focusNode(id,1); } else { route=NODE[id].route; openNodeCard(id); }
-    return;
+    var id=nd.dataset.nid, n=NODE[id];
+    if(VIEW.k<.42){ clearNeeds(); focusNode(id,.95); return; }
+    route=n.route;
+    if(nodeStatus(n)==='locked'){ showNeeds(n); return; }
+    clearNeeds(); openNodeCard(id); return;
   }
+  clearNeeds();
   if(rd){
     var ri=+rd.dataset.rid, r=ROUTES[ri], c=currentNode(ri)||r.nodes[0];
     route=ri; animateTo(focusView(c.mx,c.my,1));
@@ -1541,6 +1703,7 @@ document.addEventListener('click',function(ev){
   if(a==='cel-close'){ if(t.classList.contains('scrim') && ev.target!==t) return; var nx=SHEET&&SHEET.next; closeLayer(); if(nx) scrollToCurrent(nx); return; }
   if(a==='tab'){ tab=t.dataset.t; render(); if(tab==='journal') main.scrollTop=0; return; }
   if(a==='strand'){ if(S.strand!==t.dataset.s){ S.strand=t.dataset.s; ensureRoute(); saveLocal(); cloudSetSkips(); VIEW=null; render(); } return; }
+  if(a==='need-open'){ var nid=t.dataset.id; clearNeeds(); openNodeCard(nid); return; }
   if(a==='nextup'){ openNextUp(); return; }
   if(a==='nu-go'){ var gid=t.dataset.id; if(!gid) return; route=+t.dataset.r; closeLayer(); focusNode(gid,1); setTimeout(function(){ openNodeCard(gid); },380); return; }
   if(a==='map-in'){ var z=mapSize(); zoomAbout(z.w/2,z.h/2,VIEW.k*1.6,true); return; }
@@ -1638,7 +1801,7 @@ if(!S.strand) openOnboarding(1);
 initCloud();
 var GRADING_ON=false; /* parked: AI photo grading, flip to true once approved */
 (function(){ try{ if(GRADING_ON&&window.claude&&claude.use){ claude.use('sample').then(function(sm){ if(!sm||!sm.json) return; return Promise.resolve(sm.limits&&sm.limits()).then(function(l){ if(l&&l.images){ SAMPLE=sm; if(ED) renderEditor(true); } }); }).catch(function(){}); } }catch(e){} })();
-window.__mise = {S:function(){return S;}, FLAT:FLAT};
+window.__mise = {S:function(){return S;}, FLAT:FLAT, view:function(x,y,k){ VIEW={x:x,y:y,k:k}; applyView(); },relayout:function(l){ LAYOUT=l; layoutAll(); VIEW=null; MV={}; render(); },metrics:function(){ var ns=FLAT.filter(function(n){return n.id.indexOf('c-')!==0}), L=[],All=[],segs=[]; ns.forEach(function(n){ n.pre.forEach(function(q,k){ var d=Math.hypot(n.mx-q.mx,n.my-q.my); All.push(d); if(k===0){ L.push(d); segs.push([q.mx,q.my,n.mx,n.my,q.id,n.id]); } }); }); var X=0; function ccw(a,b,c,d,e,f){ return (f-b)*(c-a)-(d-b)*(e-a); } for(var i=0;i<segs.length;i++) for(var j=i+1;j<segs.length;j++){ var A=segs[i],B=segs[j]; if(A[4]===B[4]||A[5]===B[5]||A[4]===B[5]||A[5]===B[4]) continue; if(ccw(A[0],A[1],A[2],A[3],B[0],B[1])*ccw(A[0],A[1],A[2],A[3],B[2],B[3])<0 && ccw(B[0],B[1],B[2],B[3],A[0],A[1])*ccw(B[0],B[1],B[2],B[3],A[2],A[3])<0) X++; } var mn=1e9; ns.forEach(function(a){ ns.forEach(function(b){ if(a!==b) mn=Math.min(mn,Math.hypot(a.mx-b.mx,a.my-b.my)); }); }); var sum=function(a){return a.reduce(function(x,y){return x+y;},0);}; return {meanBranch:Math.round(sum(L)/L.length),longestBranch:Math.round(Math.max.apply(null,L)),longestAny:Math.round(Math.max.apply(null,All)),branchCrossings:X,closestPair:Math.round(mn),radius:Math.round(STRAND_INFO.home.maxR)}; },go:function(id,k){ var n=NODE[id]; VIEW=focusView(n.mx,n.my,k); applyView(); }};
 if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
 }
