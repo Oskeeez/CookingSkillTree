@@ -74,7 +74,7 @@ a{color:inherit}
 
 #main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 40px}
 
-#tabs{flex:none;display:grid;grid-template-columns:1fr 1fr 1fr;background:rgba(255,255,255,.9);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+#tabs{flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.9);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
 .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 0 8px;color:var(--muted);font:600 12px/1.2 var(--body);text-align:center}
 .tab svg{width:25px;height:25px}
 .tab[aria-current="page"]{color:var(--c0)}
@@ -171,6 +171,19 @@ a{color:inherit}
 .actions{display:grid;gap:12px;margin-top:16px}
 .note{color:var(--muted);font-size:14px}
 
+.today{padding:6px 2px 24px;display:grid;gap:4px}
+.hero{padding:18px 16px;border:2px solid var(--u);border-radius:22px;background:var(--u-t);box-shadow:0 4px 0 var(--u)}
+.hero .ed-title{margin:6px 0 4px}
+.hero .hfocus{margin:10px 0 0;font-size:15px}
+.hrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hrow:has(> :only-child){grid-template-columns:1fr}
+.pl-open{text-align:left}
+.treecard{display:flex;align-items:center;gap:14px;width:100%;padding:12px;border:2px solid var(--line);border-radius:20px;background:#fff;text-align:left}
+.treecard b{display:block;font:700 17px var(--display)}.treecard small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.mini{width:110px;height:110px;flex:none;background:var(--bg);border-radius:14px}
+.mt-l{stroke:var(--u-d);stroke-width:7;stroke-linecap:round;opacity:.7}
+.mt-n{fill:#fff;stroke:var(--u-d);stroke-width:6}.mt-n.d{fill:var(--u-d)}
+.mt-h{fill:var(--c0)}
 .pl{display:grid;gap:8px;list-style:none;padding:0;margin:8px 0 16px}
 .pl-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:2px solid var(--u);border-radius:16px;background:var(--u-t)}
 .pl-t{flex:1;display:grid;gap:2px;min-width:0}
@@ -289,6 +302,26 @@ input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
 .mseg.x{display:none}
 .bdg circle{fill:#fff;stroke:var(--u-d);stroke-width:2.5}
 .bdg text{font:700 11px var(--mono);fill:var(--u-ink)}
+.mn.grow>.mb{animation:grw .8s cubic-bezier(.2,1.5,.4,1) .15s both;transform-box:fill-box;transform-origin:center}
+.mn.grow>svg,.mn.grow>.ttl{animation:grf .6s ease .5s both}
+.mseg.grow{animation:grf .9s ease both}
+@keyframes grw{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes grf{from{opacity:0}to{opacity:1}}
+.mapctl .mbtn.fogbtn[aria-pressed="true"]{background:var(--u-t);color:var(--u-ink)}
+.mn.fog{opacity:.45}
+.mn.fog .ttl,.mn.fog .bdg,.mn.fog svg,.mn.fog .pulse{display:none}
+.mn.fog .mb{transform:scale(.46);transform-box:fill-box;transform-origin:center}
+.mseg.fogseg{opacity:.35;stroke-width:3}
+#map.hl .mn.fog.need,#map.hl .mn.fog.tgt{opacity:1}
+#map.hl .mn.fog.need .ttl,#map.hl .mn.fog.tgt .ttl,#map.hl .mn.fog.need svg,#map.hl .mn.fog.tgt svg{display:inline}
+#map.hl .mn.fog.need .mb,#map.hl .mn.fog.tgt .mb{transform:none}
+#cooknext{position:absolute;left:12px;right:78px;bottom:14px;z-index:3;display:flex;align-items:center;gap:8px;overflow-x:auto;padding:4px 2px;scrollbar-width:none}
+#cooknext::-webkit-scrollbar{display:none}
+#cooknext .cn-l{flex:none;font:500 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.85);padding:6px 8px;border-radius:10px}
+#cooknext .cn{flex:none;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 14px;min-height:42px;border-radius:21px;background:#fff;border:2px solid var(--u);color:var(--u-ink);font:700 14px var(--display);box-shadow:0 3px 0 var(--u)}
+.mapctl .mbtn.fogbtn{font-size:11px;letter-spacing:.04em}
+.mapctl .mbtn.fogbtn[aria-pressed="false"]{opacity:.55}
+.pbdg circle{fill:var(--c0);stroke:#fff;stroke-width:2}
 .mn .flash{display:none;fill:none;stroke:#ff8a1f;stroke-width:6}
 #map.hl .mn{opacity:.28}
 #map.hl .mpill,#map.hl .mend,#map.hl .hub{opacity:.35}
@@ -762,7 +795,7 @@ function prevWeek(w){ var d=new Date(w); d.setDate(d.getDate()-7); return d.getT
  * ------------------------------------------------------------------ */
 var LS_KEY='mise.v1';
 var S = {entries:{}, skips:[], strand:null, plan:[], ticked:{}, buy:{}};
-var tab='path', SHEET=null, ED=null, syncState='device';
+var tab='today', SHEET=null, ED=null, syncState='device';
 var SAMPLE=null, GRADING=false;
 var route=0; try{ var rr=+localStorage.getItem('mise.route'); if(rr>=0 && rr<ROUTES.length) route=rr; }catch(e){}
 
@@ -862,6 +895,20 @@ function entriesFor(nodeId){
     .sort(function(a,b){ return String(b.cookedAt||b.updatedAt).localeCompare(String(a.cookedAt||a.updatedAt)); });
 }
 function isDone(n){ return entriesFor(n.id).some(function(e){ return !!e.cookedAt; }); }
+var FOG=true; try{ FOG=localStorage.getItem('mise.fog')!=='0'; }catch(e){}
+/* Growing tree: only meals you have cooked, or can cook now, exist on the tree. Locked meals are not drawn until they open. */
+function isFogged(n){ return FOG && nodeStatus(n)==='locked'; }
+var ENDMAX=0;
+function visMaxR(ri){
+  var m=0; FLAT.forEach(function(n){ if((ri==null||n.route===ri) && ROUTES[n.route].strand===curStrand() && !isFogged(n)) m=Math.max(m,Math.hypot(n.mx,n.my)); }); return m||R0;
+}
+function cookNextHtml(){
+  var ms=nextMeals(); if(!ms.length) return '';
+  return '<div id="cooknext"><span class="cn-l">Cook next</span>'+ms.map(function(n){ return '<button class="cn r'+n.route+'" data-a="cn-go" data-id="'+esc(n.id)+'">'+esc(n.title)+'</button>'; }).join('')+'</div>';
+}
+function nextMeals(){
+  var out=[]; strandRoutes().forEach(function(ri){ var c=currentNode(ri); if(c) out.push(c); }); return out;
+}
 function nodeStatus(n){
   var es=entriesFor(n.id);
   if(es.some(function(e){ return !!e.cookedAt; })) return 'done';
@@ -896,7 +943,7 @@ var main=$('#main'), topEl=$('#top'), tabsEl=$('#tabs'), layer=$('#layer');
 function render(){
   var st=main.scrollTop;
   main.className = tab==='path' ? 'mapmode' : '';
-  if(tab==='path') renderPath(); else if(tab==='plan') renderPlan(); else renderJournal();
+  if(tab==='path') renderPath(); else if(tab==='today') renderToday(); else if(tab==='plan') renderPlan(); else renderJournal();
   renderHeader(); renderTabs(); renderRoutes();
   if(tab!=='path') main.scrollTop=st;
 }
@@ -913,7 +960,8 @@ function renderRoutes(){
 }
 function renderTabs(){
   tabsEl.innerHTML =
-   '<button class="tab" data-a="tab" data-t="path"'+(tab==='path'?' aria-current="page"':'')+'>'+icon('path')+'Path</button>'+
+   '<button class="tab" data-a="tab" data-t="today"'+(tab==='today'?' aria-current="page"':'')+'>'+icon('plate')+'Cook</button>'+
+   '<button class="tab" data-a="tab" data-t="path"'+(tab==='path'?' aria-current="page"':'')+'>'+icon('path')+'Tree</button>'+
    '<button class="tab" data-a="tab" data-t="plan"'+(tab==='plan'?' aria-current="page"':'')+'>'+icon('cart')+'Plan'+(S.plan.length?' ('+S.plan.length+')':'')+'</button>'+
    '<button class="tab" data-a="tab" data-t="journal"'+(tab==='journal'?' aria-current="page"':'')+'>'+icon('book')+'Journal</button>';
 }
@@ -923,6 +971,10 @@ function renderHeader(){
      '<div class="t-left"><div class="mono">Skill tree</div><div class="t-title">'+esc(STRANDS.filter(function(x){return x.id===curStrand();})[0].name)+'</div></div>'+
      '<div class="pills"><span class="pill p-flame" title="Weeks in a row you cooked">'+icon('flame')+streakWeeks()+'<span class="sr"> week streak</span></span>'+
      '<span class="pill p-count" title="Meals cooked on the path">'+icon('plate')+strandNodes().filter(isDone).length+'/'+strandNodes().length+'</span></div>';
+  } else if(tab==='today'){
+    topEl.innerHTML='<div class="t-left"><div class="mono">Tonight</div><div class="t-title">What to cook</div></div>'+
+     '<div class="pills"><span class="pill p-flame" title="Weeks in a row you cooked">'+icon('flame')+streakWeeks()+'<span class="sr"> week streak</span></span>'+
+     '<span class="pill p-count" title="Meals cooked">'+icon('plate')+strandNodes().filter(isDone).length+'/'+strandNodes().length+'</span></div>';
   } else if(tab==='plan'){
     topEl.innerHTML='<div class="t-left"><div class="mono">This week</div><div class="t-title">Plan</div></div>';
   } else {
@@ -1134,7 +1186,7 @@ var MV={}, VIEW=null, mapEl=null, vpEl=null, ptrs={}, gest=null, animId=0;
 function mapSize(){ return {w:main.clientWidth||390,h:main.clientHeight||600}; }
 function clampK(k){ return Math.max(.1,Math.min(2.4,k)); }
 function fitView(){
-  var z=mapSize(), mr=STRAND_INFO[curStrand()].maxR, k=clampK(Math.min(z.w,z.h)/(2*(mr+64+290)));
+  var z=mapSize(), mr=FOG?Math.max(visMaxR(),ENDMAX-90):STRAND_INFO[curStrand()].maxR, k=clampK(Math.min(z.w,z.h)/(2*(mr+64+(FOG?150:290))));
   return {x:z.w/2,y:z.h/2,k:k};
 }
 function homeView(){
@@ -1188,42 +1240,63 @@ function renderPath(){
   var sid=curStrand(), info=STRAND_INFO[sid], st=STRANDS.filter(function(x){return x.id===sid;})[0];
   var segs='', nodes='', pills='', ends='', rings='';
   var strandNs=FLAT.filter(function(n){ return ROUTES[n.route].strand===sid; });
+  var seen={}; try{ seen=JSON.parse(localStorage.getItem('mise.seen'+sid)||'{}')||{}; }catch(e){}
+  var seenNow={};
   strandNs.forEach(function(n){
+    if(isFogged(n)) return;
     var on0=nodeStatus(n)!=='locked' || n.pre.length===0;
     if(n.pre.length===0){
       segs+='<g class="r'+n.route+'"><path data-t="'+esc(n.id)+'" class="mseg on" d="M'+(Math.cos(n.a)*60).toFixed(0)+' '+(Math.sin(n.a)*60).toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
     }
     n.pre.forEach(function(p,k){
-      segs+='<g class="r'+n.route+'"><path data-f="'+esc(p.id)+'" data-t="'+esc(n.id)+'" class="mseg'+''+(isDone(p)?' on':'')+'" d="M'+p.mx.toFixed(0)+' '+p.my.toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
+      segs+='<g class="r'+n.route+'"><path data-f="'+esc(p.id)+'" data-t="'+esc(n.id)+'" class="mseg'+(seen[n.id]?'':' grow')+(isDone(p)?' on':'')+'" d="M'+p.mx.toFixed(0)+' '+p.my.toFixed(0)+'L'+n.mx.toFixed(0)+' '+n.my.toFixed(0)+'"/></g>';
     });
   });
   strandNs.forEach(function(n){
+    if(isFogged(n)) return;
+    seenNow[n.id]=1;
     var ri=n.route, r=ROUTES[ri], s2=nodeStatus(n), R=n.boss?32:25;
     var glyph = s2==='done' ? '<svg x="-12" y="-12" width="24" height="24" viewBox="0 0 24 24" style="stroke-width:3">'+ICON.check+'</svg>'
       : s2==='locked' ? '<svg x="-11" y="-11" width="22" height="22" viewBox="0 0 24 24">'+ICON.lock+'</svg>'
       : n.boss ? '<svg x="-12" y="-12" width="24" height="24" viewBox="0 0 24 24">'+ICON.cloche+'</svg>'
       : '<svg x="-11" y="-11" width="22" height="22" viewBox="0 0 24 24">'+ICON.plate+'</svg>';
     var label={done:'cooked',locked:'locked',open:'ready',learning:'in progress'}[s2];
-    nodes+='<g class="mn r'+ri+' st-'+s2+(n.boss?' boss':'')+'" data-nid="'+esc(n.id)+'" tabindex="0" role="button" aria-label="'+esc(n.title+', '+r.name+', '+label)+'" transform="translate('+n.mx.toFixed(0)+','+n.my.toFixed(0)+')">'+
+    nodes+='<g class="mn r'+ri+' st-'+s2+(n.boss?' boss':'')+(seen[n.id]?'':' grow')+'" data-nid="'+esc(n.id)+'" tabindex="0" role="button" aria-label="'+esc(n.title+', '+r.name+', '+label)+'" transform="translate('+n.mx.toFixed(0)+','+n.my.toFixed(0)+')">'+
       '<circle class="hit" data-r="'+R+'" r="'+(R+10)+'"/>'+
       ((s2==='open'||s2==='learning')?'<circle class="pulse" r="'+(R+4)+'"/>':'')+
       '<circle class="flash" r="'+(R+7)+'"/>'+
       '<circle class="mb" r="'+R+'"/>'+glyph+
-      ((n.pre.length>1&&s2!=='done')?'<g class="bdg" transform="translate('+(R-3)+','+(-R+3)+')"><circle r="9"/><text y="1">'+n.pre.length+'</text></g>':'')+'<text class="ttl" y="'+(R+16)+'">'+esc(trunc(n.title,17))+'</text></g>';
+      ((n.pre.length>1&&s2!=='done')?'<g class="bdg" transform="translate('+(R-3)+','+(-R+3)+')"><circle r="9"/><text y="1">'+n.pre.length+'</text></g>':'')+''+(inPlan(n.id)?planBadge(R):'')+'<text class="ttl" y="'+(R+16)+'">'+esc(trunc(n.title,17))+'</text></g>';
   });
+  /* Branch labels are pushed outward along their branch until they clear every meal and every other label. */
+  var visNs=strandNs.filter(function(n){ return !isFogged(n); }), boxes={pill:[],end:[]};
+  function placeLabel(kind,ri,base,hw,hh){
+    var r=ROUTES[ri], rr=base, step=16, list=boxes[kind];
+    for(var i=0;i<140;i++,rr+=step){
+      var cx=r.ca*rr, cy=r.sa*rr, bad=visNs.some(function(n){ return Math.abs(n.mx-cx)<hw+34 && Math.abs(n.my-cy)<hh+34; })
+        || list.some(function(b){ return Math.abs(b[0]-cx)<hw+b[2]+8 && Math.abs(b[1]-cy)<hh+b[3]+8; });
+      if(!bad) break;
+    }
+    list.push([r.ca*rr,r.sa*rr,hw,hh]); return rr;
+  }
+  var endMax=0;
   info.ris.forEach(function(ri){
-    var r=ROUTES[ri], px=Math.round(r.ca*PILL_R), py=Math.round(r.sa*PILL_R), cnt=routeProgress(ri);
+    var r=ROUTES[ri], cnt=routeProgress(ri);
+    var pw=Math.max(96,Math.round(r.name.length*7.8+26));
+    var pr=FOG?placeLabel('pill',ri,PILL_R,pw/2,21):PILL_R, px=Math.round(r.ca*pr), py=Math.round(r.sa*pr);
     var pw=Math.max(96,Math.round(r.name.length*7.8+26));
     pills+='<g class="mpill r'+ri+'" data-rid="'+ri+'" data-px="'+px+'" data-py="'+py+'" transform="translate('+px+','+py+')"><rect x="'+(-pw/2)+'" y="-21" width="'+pw+'" height="42" rx="21"/><text y="-5">'+esc(r.name)+'</text><text class="c" y="12">'+cnt+'</text></g>';
-    var er=info.maxR+90, ex=r.ca*er, ey=r.sa*er;
+    var er=FOG?placeLabel('end',ri,visMaxR(ri)+90,pw/2*2.5,21*2.5):info.maxR+90, ex=r.ca*er, ey=r.sa*er; endMax=Math.max(endMax,er);
     ends+='<g class="mend r'+ri+'" data-rid="'+ri+'" data-px="'+ex.toFixed(0)+'" data-py="'+ey.toFixed(0)+'" transform="translate('+ex.toFixed(0)+','+ey.toFixed(0)+')"><rect x="'+(-pw/2)+'" y="-21" width="'+pw+'" height="42" rx="21"/><text y="-5">'+esc(r.name)+'</text><text class="c" y="12">'+cnt+'</text></g>';
   });
+  ENDMAX=endMax;
+  try{ localStorage.setItem('mise.seen'+sid,JSON.stringify(Object.assign(seen,seenNow))); }catch(e){}
   var total=strandNodes().length, done=strandNodes().filter(isDone).length;
   var hub='<g class="hub"><circle r="36"/><text y="-6">'+(sid==='chef'?'Chef':'Home')+'</text><text class="c" y="13">'+done+'/'+total+'</text></g>';
   var hint = (allEntries().length===0 && !(function(){ try{ return localStorage.getItem('mise.hint'); }catch(e){ return null; } })()) ?
     '<div id="maphint" role="note"><b>Look around</b>Drag to move, pinch to zoom, tap a branch to jump in. Every branch is open, pick any.<br><button class="link" data-a="hint-ok">Got it</button></div>' : '';
   main.innerHTML='<div id="mapwrap"><svg id="map" role="group" aria-label="'+esc(st.name)+' skill tree"><g id="vp">'+segs+hub+nodes+pills+ends+'</g></svg>'+
-    '<div id="needbar" hidden role="status"></div><div class="mapctl"><button class="mbtn" data-a="map-in" aria-label="Zoom in">+</button><button class="mbtn" data-a="map-out" aria-label="Zoom out">−</button><button class="mbtn fit" data-a="map-fit" aria-label="Show the whole tree">ALL</button></div>'+hint+'</div>';
+    '<div id="needbar" hidden role="status"></div>'+'<div class="mapctl"><button class="mbtn fogbtn" data-a="fog" aria-pressed="'+(!FOG)+'" aria-label="Show the whole map, including meals not unlocked yet">MAP</button><button class="mbtn" data-a="map-in" aria-label="Zoom in">+</button><button class="mbtn" data-a="map-out" aria-label="Zoom out">−</button><button class="mbtn fit" data-a="map-fit" aria-label="Show the whole tree">ALL</button></div>'+hint+'</div>';
   mapEl=$('#map'); vpEl=$('#vp');
   if(MV[sid]) VIEW=MV[sid];
   else {
@@ -1232,6 +1305,7 @@ function renderPath(){
   }
   applyView(); bindMap();
 }
+var lpTimer=0;
 function bindMap(){
   var rect=function(){ return mapEl.getBoundingClientRect(); };
   mapEl.addEventListener('pointerdown',function(ev){
@@ -1240,7 +1314,9 @@ function bindMap(){
     var r=rect(); ptrs[ev.pointerId]={x:ev.clientX-r.left,y:ev.clientY-r.top};
     try{ mapEl.setPointerCapture(ev.pointerId); }catch(e){}
     var ids=Object.keys(ptrs);
-    if(ids.length===1) gest={type:'pan',sx:ptrs[ids[0]].x,sy:ptrs[ids[0]].y,x0:VIEW.x,y0:VIEW.y,moved:false,target:ev.target};
+    if(ids.length===1){ gest={type:'pan',sx:ptrs[ids[0]].x,sy:ptrs[ids[0]].y,x0:VIEW.x,y0:VIEW.y,moved:false,target:ev.target};
+      var ln=ev.target.closest&&ev.target.closest('[data-nid]'), g0=gest; clearTimeout(lpTimer);
+      if(ln && RECIPES[ln.dataset.nid] && nodeStatus(NODE[ln.dataset.nid])!=='locked') lpTimer=setTimeout(function(){ if(gest===g0 && !g0.moved){ g0.long=true; planToggleNode(ln.dataset.nid); } },520); }
     else if(ids.length===2) startPinch();
   });
   function startPinch(){
@@ -1261,12 +1337,13 @@ function bindMap(){
     }
   });
   function up(ev){
+    clearTimeout(lpTimer);
     if(!ptrs[ev.pointerId]) return;
     delete ptrs[ev.pointerId];
     var ids=Object.keys(ptrs), g=gest;
     if(ids.length===0){
       gest=null;
-      if(g && g.type==='pan' && !g.moved && ev.type==='pointerup') mapTap(g.target);
+      if(g && g.type==='pan' && !g.moved && !g.long && ev.type==='pointerup') mapTap(g.target);
     } else if(ids.length===1){
       var p=ptrs[ids[0]]; gest={type:'pan',sx:p.x,sy:p.y,x0:VIEW.x,y0:VIEW.y,moved:true,target:null};
     }
@@ -1374,7 +1451,7 @@ function renderJournal(){
       '<div class="tk-learned">Take the pan off the heat before they look done. They finish cooking on the plate.</div>'+
       '<div class="tk-foot"><span>'+icon('video')+'2 videos</span><span>'+icon('note')+'Notes</span></div></div>'+
       '<p class="note" style="margin-top:14px">Your cooks show up here, newest first. Head to the Path and start with the glowing meal.</p>'+
-      '<div class="actions"><button class="btn block" data-a="tab" data-t="path">Go to the path</button></div>';
+      '<div class="actions"><button class="btn block" data-a="tab" data-t="today">Pick something to cook</button></div>';
   } else {
     if(drafts.length){
       html+='<h2 class="mono month">In the works</h2><ul class="list">'+drafts.map(function(e){ return '<li>'+ticketHtml(e)+'</li>'; }).join('')+'</ul>';
@@ -1478,6 +1555,13 @@ function parseIng(raw){
     if(ALIAS[nm]) shown=ALIAS[nm]; return {qty:qty,unit:unit,key:key,shown:shown,opt:opt}; });
 }
 function aisleOf(key){ if(/juice/.test(key)) return 'Pantry'; for(var i=0;i<AISLES.length;i++) if(AISLES[i][1].test(key)) return AISLES[i][0]; return 'Pantry'; }
+function planBadge(R){ return '<g class="pbdg" transform="translate('+(R-3)+','+(R-3)+')"><circle r="10"/><path d="M-5 -4h2l1.6 7h5l1.4-5.5h-8.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>'; }
+function planToggleNode(id){
+  var was=inPlan(id); if(was) planRemove(id); else planAdd(id); saveLocal(); renderTabs();
+  var g=mapEl.querySelector('.mn[data-nid="'+id+'"]'); if(g){ var b=g.querySelector('.pbdg'); if(b) b.remove(); if(!was){ g.querySelector('.mb').insertAdjacentHTML('afterend',planBadge(+g.querySelector('.hit').dataset.r)); } }
+  try{ if(navigator.vibrate) navigator.vibrate(25); }catch(e){}
+  toast(was?NODE[id].title+' removed from the plan.':NODE[id].title+' added to this week.');
+}
 function inPlan(id){ return S.plan.some(function(x){ return x.id===id; }); }
 function planAdd(id){ if(!RECIPES[id]||inPlan(id)) return; S.plan.push({id:id,serves:RECIPES[id].serves}); }
 function planRemove(id){ S.plan=S.plan.filter(function(x){ return x.id!==id; }); }
@@ -1560,6 +1644,50 @@ function renderPlan(){
   } else if(!S.plan.length){
     html+='<p class="note">Recipes are ready for the Foundations meals. Unlock one on the path first.</p>';
   }
+  main.innerHTML=html+'</div>';
+}
+
+/* ------------------------------------------------------------------ *
+ * Cook tab: one suggestion at a time
+ * ================================================================== */
+var sugIdx=0;
+function suggestions(){
+  var ns=strandNodes().filter(function(n){ var s2=nodeStatus(n); return s2==='open'||s2==='learning'; });
+  var last=allEntries().filter(function(e){ return e.cookedAt && e.nodeId && NODE[e.nodeId] && ROUTES[NODE[e.nodeId].route].strand===curStrand(); })
+    .sort(function(a,b){ return String(b.cookedAt).localeCompare(String(a.cookedAt)); })[0];
+  var lr = last ? NODE[last.nodeId].route : -1;
+  function score(n){ return (inPlan(n.id)?-100:0)+(nodeStatus(n)==='learning'?-50:0)+(n.route===lr?-20:0)+(RECIPES[n.id]?-10:0)+n.depth; }
+  return ns.sort(function(a,b){ return score(a)-score(b); });
+}
+function miniTree(){
+  var sid=curStrand(), vis=strandNodes().filter(function(n){ return !isFogged(n); }), R=Math.max(visMaxR(),R0)+40, g='';
+  vis.forEach(function(n){
+    if(!n.pre.length) g+='<line class="mt-l r'+n.route+'" x1="0" y1="0" x2="'+n.mx.toFixed(0)+'" y2="'+n.my.toFixed(0)+'"/>';
+    n.pre.forEach(function(p){ if(!isFogged(p)) g+='<line class="mt-l r'+n.route+'" x1="'+p.mx.toFixed(0)+'" y1="'+p.my.toFixed(0)+'" x2="'+n.mx.toFixed(0)+'" y2="'+n.my.toFixed(0)+'"/>'; });
+  });
+  vis.forEach(function(n){ var d=isDone(n); g+='<circle class="mt-n r'+n.route+(d?' d':'')+'" cx="'+n.mx.toFixed(0)+'" cy="'+n.my.toFixed(0)+'" r="'+(d?15:11)+'"/>'; });
+  return '<svg class="mini" viewBox="'+(-R)+' '+(-R)+' '+(2*R)+' '+(2*R)+'" aria-hidden="true">'+g+'<circle class="mt-h" r="26"/></svg>';
+}
+function renderToday(){
+  var ss=suggestions(), html='<div class="today">';
+  if(!ss.length){
+    html+='<div class="hero"><span class="mono">All caught up</span><h2 class="ed-title">Nothing waiting</h2><p class="note">You have cooked everything that is open. Cook something new from the Journal, or switch strand.</p></div>';
+  } else {
+    var n=ss[sugIdx%ss.length], r=RECIPES[n.id], lastTxt=nodeStatus(n)==='learning'?'You started this one':(inPlan(n.id)?'On your plan this week':'Ready for you');
+    html+='<div class="hero r'+n.route+'"><span class="mono">'+esc(lastTxt)+'</span><h2 class="ed-title">'+esc(n.title)+'</h2>'+
+      '<p class="note">'+esc(ROUTES[n.route].name)+' · about '+fmtMins(n.mins)+'</p><p class="hfocus">'+esc(n.focus)+'</p>'+
+      '<div class="actions"><button class="btn block" data-a="today-cook" data-id="'+esc(n.id)+'">'+(r?'Start cooking':'Open this meal')+'</button>'+
+      '<div class="hrow"><button class="btn alt" data-a="open-node" data-id="'+esc(n.id)+'">Details</button>'+
+      (r?'<button class="btn alt" data-a="plan-toggle" data-id="'+esc(n.id)+'">'+(inPlan(n.id)?'In plan':'Add to plan')+'</button>':'')+'</div>'+
+      (ss.length>1?'<button class="link" data-a="today-skip">Not feeling it, show another ('+(sugIdx%ss.length+1)+' of '+ss.length+')</button>':'')+'</div></div>';
+  }
+  if(S.plan.length){
+    html+='<h2 class="mono month">This week</h2><ul class="list pl">'+S.plan.map(function(pe){ var n=NODE[pe.id];
+      return '<li class="pl-row r'+n.route+'"><button class="pl-t pl-open" data-a="open-node" data-id="'+esc(pe.id)+'"><b>'+esc(n.title)+'</b><span class="note">Serves '+pe.serves+'</span></button></li>'; }).join('')+'</ul>'+
+      '<button class="link" data-a="tab" data-t="plan">Shopping list for these</button>';
+  }
+  var done=strandNodes().filter(isDone).length, tot=strandNodes().length;
+  html+='<h2 class="mono month">Your tree</h2><button class="treecard" data-a="tab" data-t="path">'+miniTree()+'<span><b>'+done+' of '+tot+' meals</b><small>'+(done?'Every meal you cook grows it. Tap to explore.':'Cook your first meal and it starts to grow.')+'</small></span></button>';
   main.innerHTML=html+'</div>';
 }
 function openRecipe(id){
@@ -1880,7 +2008,7 @@ document.addEventListener('click',function(ev){
   if(a==='onb-cancel'){ closeLayer(); return; }
   if(a==='pick-route'){
     S.strand=ONB.strand; route=+t.dataset.r; try{ localStorage.setItem('mise.route',String(route)); }catch(e){}
-    saveLocal(); cloudSetSkips(); closeLayer(); tab='path'; VIEW=null; MV[S.strand]=null; render(); var cn=currentNode(route); if(cn) setTimeout(function(){ focusNode(cn.id,.95); },250); return;
+    saveLocal(); cloudSetSkips(); closeLayer(); tab='today'; VIEW=null; MV[S.strand]=null; render(); return;
   }
   if(a==='node'){ openNodeCard(t.dataset.id); return; }
   if(a==='close'){ closeLayer(); return; }
@@ -1889,8 +2017,13 @@ document.addEventListener('click',function(ev){
   if(a==='free'){ openEditor(blankEntry(null),true); return; }
   if(a==='open-entry'){ var e=S.entries[t.dataset.eid]; if(e) openEditor(e,false); return; }
   if(a==='copy-text'){ var txt=journalText(); if(!txt) toast('Nothing to copy yet.'); else copyText(txt); return; }
+  if(a==='fog'){ FOG=!FOG; try{ localStorage.setItem('mise.fog',FOG?'1':'0'); }catch(e){} clearNeeds(); render(); toast(FOG?'Showing only what you have grown.':'Showing the whole map, locked meals included.'); return; }
+  if(a==='today-skip'){ sugIdx++; render(); return; }
+  if(a==='today-cook'){ var tid=t.dataset.id; if(RECIPES[tid]) ckStart(tid); else openNodeCard(tid); return; }
+  if(a==='cn-go'){ var cid=t.dataset.id; route=NODE[cid].route; openNodeCard(cid); return; }
   if(a==='plan-toggle'){ var pid=t.dataset.id; if(inPlan(pid)){ planRemove(pid); toast('Removed from the plan.'); } else { planAdd(pid); toast('Added to this week.'); }
-    saveLocal(); if(SHEET&&SHEET.type==='recipe') openRecipe(pid); else if(SHEET&&SHEET.type==='node') openNodeCard(pid,true); renderTabs(); return; }
+    saveLocal(); if(SHEET&&SHEET.type==='recipe') openRecipe(pid); else if(SHEET&&SHEET.type==='node') openNodeCard(pid,true); renderTabs(); if(tab==='today') render(); return; }
+  if(a==='open-node'){ var oid=t.dataset.id; route=NODE[oid].route; openNodeCard(oid); return; }
   if(a==='plan-add'){ planAdd(t.dataset.id); saveLocal(); render(); return; }
   if(a==='plan-rm'){ planRemove(t.dataset.id); saveLocal(); render(); return; }
   if(a==='plan-serves'){ var pe=S.plan.filter(function(x){ return x.id===t.dataset.id; })[0]; if(pe){ pe.serves=Math.max(1,Math.min(12,pe.serves+(+t.dataset.d))); saveLocal(); planRender(true); } return; }
