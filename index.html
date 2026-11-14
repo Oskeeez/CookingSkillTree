@@ -279,7 +279,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--c0);background:#fff}
 #map.hl .mn.need,#map.hl .mn.tgt{opacity:1}
 #map.hl .mn.need .flash{display:inline}
 #map.hl .mn.tgt .mb{stroke:#ff8a1f;stroke-width:6}
-#map.hl .mseg.x.need{display:inline;opacity:1;stroke:#ff8a1f;stroke-width:6;stroke-dasharray:2 11}
 #map.hl .mseg.need{opacity:1;stroke:#ff8a1f}
 @media (prefers-reduced-motion:no-preference){#map.hl .mn.need .flash{animation:fl .6s ease-in-out infinite alternate}}
 @keyframes fl{from{opacity:1;stroke-width:3}to{opacity:.35;stroke-width:9}}
@@ -925,7 +924,7 @@ function updateUnitLabel(){
  * Radial skill tree: a hub in the middle, one branch per route.
  * Pan, pinch and tap. Meals unlock in order inside a branch, but every branch is open from the start.
  * ------------------------------------------------------------------ */
-var R0=225, STEP=95, PILL_R=105, MINSEP=112;
+var R0=125, STEP=95, PILL_R=105, MINSEP=112;
 var STRAND_INFO={};
 function normA(a){ a%=2*Math.PI; return a<0?a+2*Math.PI:a; }
 function spreadRing(items,r,minChord){
@@ -947,7 +946,7 @@ function spreadRing(items,r,minChord){
 /* Layout tuning. 'init:tree' starts from a crossing-free radial tree, 'force' then relaxes it with springs. */
 /* straight: 0 = ignore, ~.5 = nice default, 1+ = strongly prefer every branch to point straight away from the centre */
 var LAYOUT={mode:'force',init:'tree',iters:400,crossLen:1.6,kCross:.012,rootPin:.08,sector:0,jitter:0,starts:1,
-  spring:135,kPrim:.04,repel:26000,minD:120,rstep:120,outward:0,straight:.25,kAvoid:2.2,clear:56,wedgePow:.8,step:125};
+  spring:135,kPrim:.04,repel:26000,minD:120,rstep:120,outward:0,straight:.1,smooth:.2,kAvoid:2.2,clear:56,wedgePow:.8,step:125};
 /* Spring layout. Starts from the ring layout, then:
    springs pull connected meals together, meals push each other apart, a soft pull keeps early meals near the hub
    and keeps each branch roughly in its own sector. Fully deterministic, so the tree looks the same every load. */
@@ -989,6 +988,7 @@ function forceSolve(ns,secOf,p){
     }
     return c+len/edges.length;
   }
+  var prim={}; edges.forEach(function(E){ if(E[2]) prim[E[1]]=E[0]; });
   function run(seed){
     var X=X0.slice(), Y=Y0.slice(), FX=[], FY=[], rnd=seed*9301+49297;
     function rand(){ rnd=(rnd*9301+49297)%233280; return rnd/233280-.5; }
@@ -999,6 +999,14 @@ function forceSolve(ns,secOf,p){
       for(e=0;e<edges.length;e++){
         var E=edges[e], a=E[0], b=E[1], dx=X[b]-X[a], dy=Y[b]-Y[a], L=Math.hypot(dx,dy)||1, rest=p.spring*(E[2]?1:p.crossLen), k=E[2]?p.kPrim:p.kCross, f=k*(L-rest);
         FX[a]+=f*dx/L; FY[a]+=f*dy/L; FX[b]-=f*dx/L; FY[b]-=f*dy/L;
+      }
+      /* smooth: a branch keeps going the way it was already heading (grandparent -> parent -> child stays in a line) */
+      if(p.smooth>0) for(e=0;e<edges.length;e++){
+        var BE=edges[e]; if(!BE[2]) continue;
+        var bp=BE[0], bc=BE[1], gp=prim[bp]; if(gp==null) continue;
+        var gx=X[bp]-X[gp], gy=Y[bp]-Y[gp], gl=Math.hypot(gx,gy)||1, bdx=X[bc]-X[bp], bdy=Y[bc]-Y[bp], bL=Math.hypot(bdx,bdy)||1;
+        var jx=X[bp]+bL*gx/gl, jy=Y[bp]+bL*gy/gl, bf=p.smooth*.5;
+        FX[bc]+=bf*(jx-X[bc]); FY[bc]+=bf*(jy-Y[bc]); FX[bp]-=bf*.25*(jx-X[bc]); FY[bp]-=bf*.25*(jy-Y[bc]);
       }
       /* outward pull: a meal wants to sit straight out from its main prerequisite, away from the centre */
       if(p.straight>0) for(e=0;e<edges.length;e++){
@@ -1808,7 +1816,7 @@ if(!S.strand) openOnboarding(1);
 initCloud();
 var GRADING_ON=false; /* parked: AI photo grading, flip to true once approved */
 (function(){ try{ if(GRADING_ON&&window.claude&&claude.use){ claude.use('sample').then(function(sm){ if(!sm||!sm.json) return; return Promise.resolve(sm.limits&&sm.limits()).then(function(l){ if(l&&l.images){ SAMPLE=sm; if(ED) renderEditor(true); } }); }).catch(function(){}); } }catch(e){} })();
-window.__mise = {S:function(){return S;}, FLAT:FLAT, view:function(x,y,k){ VIEW={x:x,y:y,k:k}; applyView(); },relayout:function(l){ LAYOUT=l; layoutAll(); VIEW=null; MV={}; render(); },metrics:function(){ var ns=FLAT.filter(function(n){return n.id.indexOf('c-')!==0}), L=[],All=[],segs=[]; ns.forEach(function(n){ n.pre.forEach(function(q,k){ var d=Math.hypot(n.mx-q.mx,n.my-q.my); All.push(d); if(k===0){ L.push(d); segs.push([q.mx,q.my,n.mx,n.my,q.id,n.id]); } }); }); var X=0; function ccw(a,b,c,d,e,f){ return (f-b)*(c-a)-(d-b)*(e-a); } for(var i=0;i<segs.length;i++) for(var j=i+1;j<segs.length;j++){ var A=segs[i],B=segs[j]; if(A[4]===B[4]||A[5]===B[5]||A[4]===B[5]||A[5]===B[4]) continue; if(ccw(A[0],A[1],A[2],A[3],B[0],B[1])*ccw(A[0],A[1],A[2],A[3],B[2],B[3])<0 && ccw(B[0],B[1],B[2],B[3],A[0],A[1])*ccw(B[0],B[1],B[2],B[3],A[2],A[3])<0) X++; } var mn=1e9; ns.forEach(function(a){ ns.forEach(function(b){ if(a!==b) mn=Math.min(mn,Math.hypot(a.mx-b.mx,a.my-b.my)); }); }); var sum=function(a){return a.reduce(function(x,y){return x+y;},0);}; var dev=[]; ns.forEach(function(n){ var q=n.pre[0]; if(!q||!q.pre.length) return; var a1=Math.atan2(n.my-q.my,n.mx-q.mx), a2=Math.atan2(q.my,q.mx), dd=Math.abs(a1-a2); dd=Math.min(dd,2*Math.PI-dd); dev.push(dd*180/Math.PI); }); return {offAxisDeg:Math.round(sum(dev)/dev.length),meanBranch:Math.round(sum(L)/L.length),longestBranch:Math.round(Math.max.apply(null,L)),longestAny:Math.round(Math.max.apply(null,All)),branchCrossings:X,closestPair:Math.round(mn),radius:Math.round(STRAND_INFO.home.maxR)}; },go:function(id,k){ var n=NODE[id]; VIEW=focusView(n.mx,n.my,k); applyView(); }};
+window.__mise = {S:function(){return S;}, FLAT:FLAT, view:function(x,y,k){ VIEW={x:x,y:y,k:k}; applyView(); },relayout:function(l){ LAYOUT=l; layoutAll(); VIEW=null; MV={}; render(); },metrics:function(){ var ns=FLAT.filter(function(n){return n.id.indexOf('c-')!==0}), L=[],All=[],segs=[]; ns.forEach(function(n){ n.pre.forEach(function(q,k){ var d=Math.hypot(n.mx-q.mx,n.my-q.my); All.push(d); if(k===0){ L.push(d); segs.push([q.mx,q.my,n.mx,n.my,q.id,n.id]); } }); }); var X=0; function ccw(a,b,c,d,e,f){ return (f-b)*(c-a)-(d-b)*(e-a); } for(var i=0;i<segs.length;i++) for(var j=i+1;j<segs.length;j++){ var A=segs[i],B=segs[j]; if(A[4]===B[4]||A[5]===B[5]||A[4]===B[5]||A[5]===B[4]) continue; if(ccw(A[0],A[1],A[2],A[3],B[0],B[1])*ccw(A[0],A[1],A[2],A[3],B[2],B[3])<0 && ccw(B[0],B[1],B[2],B[3],A[0],A[1])*ccw(B[0],B[1],B[2],B[3],A[2],A[3])<0) X++; } var mn=1e9; ns.forEach(function(a){ ns.forEach(function(b){ if(a!==b) mn=Math.min(mn,Math.hypot(a.mx-b.mx,a.my-b.my)); }); }); var sum=function(a){return a.reduce(function(x,y){return x+y;},0);}; var dev=[]; ns.forEach(function(n){ var q=n.pre[0]; if(!q||!q.pre.length) return; var a1=Math.atan2(n.my-q.my,n.mx-q.mx), a2=Math.atan2(q.my,q.mx), dd=Math.abs(a1-a2); dd=Math.min(dd,2*Math.PI-dd); dev.push(dd*180/Math.PI); }); var bends=[]; ns.forEach(function(n){ var q=n.pre[0], g=q&&q.pre[0]; if(!g) return; var a1=Math.atan2(n.my-q.my,n.mx-q.mx), a2=Math.atan2(q.my-g.my,q.mx-g.mx), dd=Math.abs(a1-a2); dd=Math.min(dd,2*Math.PI-dd); bends.push(dd*180/Math.PI); }); return {bendMean:Math.round(sum(bends)/bends.length),bendMax:Math.round(Math.max.apply(null,bends)),offAxisDeg:Math.round(sum(dev)/dev.length),meanBranch:Math.round(sum(L)/L.length),longestBranch:Math.round(Math.max.apply(null,L)),longestAny:Math.round(Math.max.apply(null,All)),branchCrossings:X,closestPair:Math.round(mn),radius:Math.round(STRAND_INFO.home.maxR)}; },go:function(id,k){ var n=NODE[id]; VIEW=focusView(n.mx,n.my,k); applyView(); }};
 if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
   window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
 }
