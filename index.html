@@ -1679,7 +1679,7 @@ function renderToday(){
       '<div class="actions"><button class="btn block" data-a="today-cook" data-id="'+esc(n.id)+'">'+(r?'Start cooking':'Open this meal')+'</button>'+
       '<div class="hrow"><button class="btn alt" data-a="open-node" data-id="'+esc(n.id)+'">Details</button>'+
       (r?'<button class="btn alt" data-a="plan-toggle" data-id="'+esc(n.id)+'">'+(inPlan(n.id)?'In plan':'Add to plan')+'</button>':'')+'</div>'+
-      (ss.length>1?'<button class="link" data-a="today-skip">Not feeling it, show another ('+(sugIdx%ss.length+1)+' of '+ss.length+')</button>':'')+'</div></div>';
+      (ss.length>1?'<button class="btn alt block" data-a="today-skip">Not feeling it, show another ('+(sugIdx%ss.length+1)+' of '+ss.length+')</button>':'')+'</div></div>';
   }
   if(S.plan.length){
     html+='<h2 class="mono month">This week</h2><ul class="list pl">'+S.plan.map(function(pe){ var n=NODE[pe.id];
